@@ -1,0 +1,16 @@
+﻿<Window x:Class="client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <TextBlock Margin="34,28,719,389">Input</TextBlock>
+        <TextBox x:Name="tbInput" Margin="34,50,600,332"></TextBox>
+        <TextBox x:Name="tbOutput" Margin="34,149,42,149"></TextBox>
+        <Button x:Name="conversionButton" Margin="232,46,390,332" Click="Button_Click">Convert</Button>
+        <TextBlock Margin="34,127,719,290">Output</TextBlock>
+    </Grid>
+</Window>
