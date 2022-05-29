@@ -7,10 +7,10 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <TextBlock Margin="34,28,719,389">Input</TextBlock>
-        <TextBox x:Name="tbInput" Margin="34,50,600,332"></TextBox>
-        <TextBox x:Name="tbOutput" Margin="34,149,42,149"></TextBox>
-        <Button x:Name="conversionButton" Margin="232,46,390,332" Click="Button_Click">Convert</Button>
-        <TextBlock Margin="34,127,719,290">Output</TextBlock>
+        <Label Margin="30,21,-34,-28">Input (Enter works too)</Label>
+        <Label Margin="30,119,-34,-119">Output</Label>
+        <TextBox x:Name="tbInput" Margin="34,50,600,332"/>
+        <TextBox x:Name="tbOutput" Margin="34,149,42,149"/>
+        <Button x:Name="conversionButton" Margin="232,46,390,332" Click="Button_Click" Content="Convert"/>
     </Grid>
 </Window>
