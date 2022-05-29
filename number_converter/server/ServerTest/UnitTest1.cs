@@ -70,5 +70,39 @@ namespace ServerTest
             Assert.AreEqual("two hundred thirty-nine million eight hundred forty-five thousand seven hundred twenty-three dollars and ten cents",
                 controller.Get("239 845 723,1"));
         }
+
+        [TestMethod]
+        public void Dollars00000000_01()
+        {
+            server.Controllers.ConvertController controller = new();
+            Assert.AreEqual("zero dollars and one cent",
+                controller.Get("00 000 000,01"));
+        }
+
+        [TestMethod]
+        public void Dollars0000_00()
+        {
+            server.Controllers.ConvertController controller = new();
+            Assert.AreEqual("zero dollars",
+                controller.Get("0 000,00"));
+        }
+
+        [TestMethod]
+        public void Dollars1000000000_00()
+        {
+            server.Controllers.ConvertController controller = new();
+
+            Assert.AreEqual("Error. Expected dollars below 1 000 000 000. Got '1000000000'.",
+                controller.Get("1 000 000 000,00"));
+        }
+
+        [TestMethod]
+        public void DollarsNegative1_1()
+        {
+            server.Controllers.ConvertController controller = new();
+
+            Assert.AreEqual("Unable to convert '-1,1'.",
+                controller.Get("-1,1"));
+        }
     }
 }
