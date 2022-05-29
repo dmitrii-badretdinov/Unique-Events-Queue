@@ -46,23 +46,51 @@ namespace server.Controllers
             }
         }
 
+        /// <summary>
+        /// Converts the text number into its integral and decimal part.
+        /// The dollar parsing is done separately because Int32.Parse()
+        /// does not recognize "NumberStyles.AllowThousands" for some reason.
+        /// Can be researched in the future.
+        /// The cent parsing can be better too, probably.
+        /// </summary>
+        /// <param name="text">The whole input number.</param>
+        /// <returns></returns>
+        /// <exception cref="FormatException">Better thell the user immediately that there's a negatie amount of money.</exception>
+        /// <exception cref="OverflowException">Checking what was given as specifications.</exception>
         static private int[] ParseNumber (string text)
         {
             var style = NumberStyles.AllowDecimalPoint | NumberStyles.AllowThousands;
             var culture = new CultureInfo("fr-FR");
             decimal number = Decimal.Parse(text, style, culture);
+
             if (number < 0)
             {
                 throw new FormatException(String.Format("Expected a positive amount of money. Got '{0}'.", number));
             }
 
             int dollars = Convert.ToInt32(Math.Floor(number));
+
             if (dollars > 999999999)
             {
                 throw new OverflowException(String.Format("Error. Expected dollars below 1 000 000 000. Got '{0}'.", dollars));
             }
 
-            int cents = (int)((number % 1) * 100);
+            string[] separatedText = text.Split(',');
+            int cents = 0;
+
+            if (separatedText.Length > 1)
+            {
+                if (separatedText[1].Length == 1)
+                {
+                    cents = Convert.ToInt32(separatedText[1]);
+                    cents *= 10;
+                }
+                else if (separatedText.Length > 1)
+                {
+                    cents = Convert.ToInt32(separatedText[1].Substring(0,2));
+                }
+            }
+
             if (cents > 99)
             {
                 throw new OverflowException(String.Format("Error. Expected cents below 99. Got '{0}'.", cents));

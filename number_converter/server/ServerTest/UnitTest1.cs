@@ -67,7 +67,7 @@ namespace ServerTest
         public void Dollars239845723_1()
         {
             server.Controllers.ConvertController controller = new();
-            Assert.AreEqual("two hundred thirty-nine million eight hundred forty-five thousand seven hundred twenty-three dollars and one cent",
+            Assert.AreEqual("two hundred thirty-nine million eight hundred forty-five thousand seven hundred twenty-three dollars and ten cents",
                 controller.Get("239 845 723,1"));
         }
     }
