@@ -23,15 +23,17 @@ namespace client
             }
         }
 
-        //static void tbInput_KeyUp(object sender, KeyEventArgs)
-        //{
-
-        //}
-
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            string response = await _client.GetStringAsync("http://localhost:5192/api/convert/" + tbInput.Text);
-            tbOutput.Text = response;
+            try
+            {
+                string response = await _client.GetStringAsync("http://localhost:5192/api/convert/" + tbInput.Text);
+                tbOutput.Text = response;
+            }
+            catch (System.Exception ex)
+            {
+                tbOutput.Text = ex.Message;
+            }
         }
 
         private static readonly HttpClient _client = new HttpClient();
