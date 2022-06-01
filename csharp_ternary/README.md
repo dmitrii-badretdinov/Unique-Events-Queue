@@ -11,7 +11,9 @@ number > 0
 * (0, 1, 2) should be ('I', 'A', 'V').
 * Standard number-to-string conversion and string-reversal should not be used.
 
-Examples:  
+Examples: 
+|Number | Result |
+| --- | --- |
 | 0 | I |
 | 1 | A |
 | 2 | V |
