@@ -29,3 +29,5 @@ Examples:
 In other words, the port 5192 on your machine should be available to use.
 
 I wrote some inline documentation for the server. It should explain why exactly a thing of interest was done in this or that way.
+
+The project will be moved to .NET/Client_server_architecture/WPF_client_.NET_server after a while.
