@@ -5,6 +5,8 @@ namespace csharp_ternary
 {
     public class Task1
     {
+        public static void Main(String[] args)
+        { }
         public string convertToCustomTernary(string input)
         {
             _resultingStringBuilder.Clear();

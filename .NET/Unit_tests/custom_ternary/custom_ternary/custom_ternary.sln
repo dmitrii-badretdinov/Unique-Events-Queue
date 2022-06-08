@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharp_ternary", "csharp_ternary\csharp_ternary.csproj", "{7DDD55E5-3522-45AD-85CE-B0B6537A06A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "custom_ternary", "csharp_ternary\custom_ternary.csproj", "{7DDD55E5-3522-45AD-85CE-B0B6537A06A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "csharp_ternary_tests", "csharp_ternary_tests\csharp_ternary_tests.csproj", "{9D0468E9-EA5C-4701-A749-5A1A7D659EA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "custom_ternary_tests", "csharp_ternary_tests\custom_ternary_tests.csproj", "{9D0468E9-EA5C-4701-A749-5A1A7D659EA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
