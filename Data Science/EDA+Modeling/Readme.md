@@ -25,6 +25,9 @@ conda activate artefact_dmitrii_homework
 
 I used `pyarrow` to read the data because its alternative - `fastparquet` - was unable to do so.
 
+Make a new Jupyter notebook with `jupyter notebook` command in the conda CLI.  
+Extract data in a way that the `data` folder is located in the same folder where the notebook is saved.
+
 # Steps and results
 
 ### Installation
