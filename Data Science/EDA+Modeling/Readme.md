@@ -62,10 +62,10 @@ Below are the core actions and ideas that I have regarding feature engineering:
 1. Flatten the objects in the sessions dataframe.  
 2. Remove the heavily skewed columns because none of them can be inferred from the data in such a way that it is useful for training the model.  
 3. Remove the rows with very scarce categories.  
-4. The general idea is that model gets all well-distributed information aside from the one that shows if the user is converted.  
-5. The conversion slider would depend on eCommerceAction.action_type. All action types would be placed on the slider from 0 to 1 where 0 is not converted and 1 is converted. The conversion would mean the probability of getting revenue.  
+4. The general idea is that model gets as much well-distributed information as possible before the curse-of-dimensionality. In other words, only a certain number of features is allowed as input.    
+5. The conversion slider would depend on eCommerceAction.action_type. All action types would be mapped to the slider from 0 to 1 where 0 is not converted and 1 is converted. The conversion would mean the probability of getting revenue.  
 6. To be useful, the visitStartTime needs to be converted to a value representing daytime in the given location. 
-7. Day of the week column needs to be added based on the date column.
+7. The date column needs to be converted to the day of the week.
 
 ### Modeling
 
