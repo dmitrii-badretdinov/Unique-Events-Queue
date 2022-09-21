@@ -1,6 +1,5 @@
-
-# Created by https://www.toptal.com/developers/gitignore/api/vue,java,maven,vuejs,python,csharp,intellij,visualstudio,visualstudiocode,jupyternotebooks
-# Edit at https://www.toptal.com/developers/gitignore?templates=vue,java,maven,vuejs,python,csharp,intellij,visualstudio,visualstudiocode,jupyternotebooks
+# Created by https://www.toptal.com/developers/gitignore/api/vue,java,vuejs,maven,python,csharp,intellij,visualstudio,jupyternotebooks,visualstudiocode,gradle
+# Edit at https://www.toptal.com/developers/gitignore?templates=vue,java,vuejs,maven,python,csharp,intellij,visualstudio,jupyternotebooks,visualstudiocode,gradle
 
 ### Csharp ###
 ## Ignore Visual Studio temporary files, build results, and
@@ -762,6 +761,31 @@ test/
 npm-debug.log
 yarn-error.log
 
+### Gradle ###
+.gradle
+**/build/
+!src/**/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Avoid ignore Gradle wrappper properties
+!gradle-wrapper.properties
+
+# Cache of project
+.gradletasknamecache
+
+# Eclipse Gradle plugin generated files
+# Eclipse Core
+# JDT-specific (Eclipse Java Development Tools)
+
+### Gradle Patch ###
+# Java heap dump
+*.hprof
+
 ### VisualStudio ###
 
 # User-specific files
@@ -943,4 +967,4 @@ yarn-error.log
 ### VisualStudio Patch ###
 # Additional files built by Visual Studio
 
-# End of https://www.toptal.com/developers/gitignore/api/vue,java,maven,vuejs,python,csharp,intellij,visualstudio,visualstudiocode,jupyternotebooks
+# End of https://www.toptal.com/developers/gitignore/api/vue,java,vuejs,maven,python,csharp,intellij,visualstudio,jupyternotebooks,visualstudiocode,gradle
