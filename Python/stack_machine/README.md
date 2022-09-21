@@ -22,3 +22,4 @@ Run my_test.py to see how the solution works.
 # Comments to development
 
 It was a fun task with recursion, although I haven't done the ASCII printing of the tree - this part by itself would take more than a day to write and test.
+
