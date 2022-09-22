@@ -53,6 +53,7 @@ public final class UniqueEventsQueue {
 
     /**
      * Adds a list of records into the queue.
+     *
      * @param recordList a list of records to put into the queue.
      */
     public void addAll(List<Record> recordList) {
@@ -71,6 +72,7 @@ public final class UniqueEventsQueue {
 
     /**
      * Retrieves the oldest record from the queue. FIFO principle.
+     * 
      * @return the oldest record from the queue.
      */
     public Record get() {
