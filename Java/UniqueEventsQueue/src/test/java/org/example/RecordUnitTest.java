@@ -6,16 +6,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RecordUnitTest {
 
     @Test
     void testThatTestsCanWork() {
-        assertThat(true, equalTo(true));
+        assertThat(true).isEqualTo(true);
     }
 
     @Test
@@ -30,7 +27,7 @@ public class RecordUnitTest {
         Date dateToChangeMaliciously = record.getDate();
         dateToChangeMaliciously.setTime(0);
         Date dateToCheck = record.getDate();
-        assertThat(dateToCheck, equalTo(originalDate));
+        assertThat(dateToCheck).isEqualTo(originalDate);
     }
 
     @Test
@@ -43,15 +40,15 @@ public class RecordUnitTest {
         Record otherTime = new Record("first", (float) 1.2342, new Date(System.currentTimeMillis() + 1));
         List<Record> recordList = Arrays.asList(otherId, otherTime, otherAmount);
 
-        assertThat(original != copy, is(true));
-        assertThat(original, equalTo(copy));
-        assertThat(original.hashCode(), equalTo(copy.hashCode()));
+        assertThat(original).isNotSameAs(copy);
+        assertThat(original).isEqualTo(copy);
+        assertThat(original.hashCode()).isEqualTo(copy.hashCode());
         copy = null;
 
         for (Record record : recordList) {
-            assertThat(original != record, is(true));
-            assertThat(original, not(record));
-            assertThat(original.hashCode(), not(record.hashCode()));
+            assertThat(original).isNotSameAs(record);
+            assertThat(original).isNotEqualTo(record);
+            assertThat(original.hashCode()).isNotEqualTo(record.hashCode());
         }
     }
 }

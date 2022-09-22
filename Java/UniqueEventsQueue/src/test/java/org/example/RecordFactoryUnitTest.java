@@ -2,14 +2,13 @@ package org.example;
 
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RecordFactoryUnitTest {
 
     @Test
     void testThatTestsCanWork() {
-        assertThat(true, equalTo(true));
+        assertThat(true).isEqualTo(true);
     }
 
     @Test
@@ -17,8 +16,8 @@ public class RecordFactoryUnitTest {
         RecordFactory factory = new RecordFactory(42);
         Record record = factory.generateRandomTestRecord();
 
-        assertThat(record.getDate().getTime() > 0, equalTo(true));
-        assertThat(record.getValue() >= 0, equalTo(true));
-        assertThat(record.getId().length() > 0, equalTo(true));
+        assertThat(record.getDate().getTime()).isGreaterThan(0);
+        assertThat(record.getValue()).isGreaterThanOrEqualTo(0);
+        assertThat(record.getId().length()).isGreaterThan(0);
     }
 }

@@ -7,9 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class UniqueEventsQueueConcurrencyTest {
     static long factorySeed = 182376523;
@@ -22,7 +21,7 @@ public class UniqueEventsQueueConcurrencyTest {
 
     @Test
     void testThatTestsCanWork() {
-        assertThat(true, equalTo(true));
+        assertThat(true).isEqualTo(true);
     }
 
     @Test
@@ -77,7 +76,7 @@ public class UniqueEventsQueueConcurrencyTest {
             fail("Test thread was interrupted.");
         }
 
-        assertThat(result, equalTo(record));
+        assertThat(result).isEqualTo(record);
         thread2.interrupt();
     }
 

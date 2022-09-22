@@ -1,18 +1,16 @@
 package org.example;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testng.collections.Lists;
 
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class UniqueEventsQueueUnitTest {
     static long factorySeed = 182376523;
@@ -25,7 +23,7 @@ class UniqueEventsQueueUnitTest {
 
     @Test
     void testThatTestsCanWork() {
-        assertThat(true, equalTo(true));
+        assertThat(true).isEqualTo(true);
     }
 
     @Test
@@ -58,8 +56,9 @@ class UniqueEventsQueueUnitTest {
         queue.add(inputIterator.next());
         queue.add(null);
 
-        assertThat(queue.get(), equalTo(outputIterator.next()));
-        assertThat(queue.get(), equalTo(outputIterator.next()));
+        for(int i = 0; i < 2; i++) {
+            assertThat(queue.get()).isEqualTo(outputIterator.next());
+        }
     }
 
     @Test
@@ -68,7 +67,7 @@ class UniqueEventsQueueUnitTest {
         Record record = factory.generateRandomTestRecord();
         queue.add(record);
         Object result = queue.get();
-        assertThat(result, equalTo(record));
+        assertThat(result).isEqualTo(record);
     }
 
     @Test
@@ -82,9 +81,9 @@ class UniqueEventsQueueUnitTest {
 
         queue.addAll(recordList);
 
-        assertThat(queue.get(), equalTo(iterator.next()));
-        assertThat(queue.get(), equalTo(iterator.next()));
-        assertThat(queue.get(), equalTo(iterator.next()));
+        for (int i = 0; i < 3; ++i) {
+            assertThat(queue.get()).isEqualTo(iterator.next());
+        }
     }
 
     @Test
