@@ -4,7 +4,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 
-public final class Record {
+final class Record {
     private final String id;
     private final float value;
     private final Date date;

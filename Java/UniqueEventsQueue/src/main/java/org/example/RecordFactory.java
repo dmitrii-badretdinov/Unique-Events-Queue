@@ -5,7 +5,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Random;
 
-public final class RecordFactory {
+final class RecordFactory {
     private final Random random;
 
     public RecordFactory(long seed) {
