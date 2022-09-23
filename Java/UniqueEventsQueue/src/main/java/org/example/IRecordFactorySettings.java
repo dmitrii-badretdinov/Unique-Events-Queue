@@ -8,4 +8,6 @@ interface IRecordFactorySettings {
     int getLeftCharLimit();
     int getRightCharLimit();
     int getStringMaxLength();
+    float getFloatMin();
+    float getFloatMax();
 }

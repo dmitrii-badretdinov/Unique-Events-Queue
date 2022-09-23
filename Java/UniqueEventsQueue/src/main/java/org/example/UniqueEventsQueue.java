@@ -1,7 +1,6 @@
 package org.example;
 
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * A thread-safe queue of unique elements.

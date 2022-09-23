@@ -17,7 +17,7 @@ final class RecordFactory {
     public Record generateRandomTestRecord(){
         String id = generateRandomTestString(settings.getLeftCharLimit(), settings.getRightCharLimit(),
             settings.getStringMaxLength());
-        float amount = generateRandomTestFloat((float) 0.001, (float) 10000000);
+        float amount = generateRandomTestFloat(settings.getFloatMin(), settings.getFloatMax());
         Instant dateLowerBound = Instant.now().minus(Duration.ofDays(1000));
         Instant dateUpperBound = Instant.now();
         Date date = generateRandomTestDate(dateLowerBound, dateUpperBound);

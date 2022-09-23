@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 
 class UniqueEventsQueueUnitTest {
     static RecordFactory factory;
@@ -34,8 +36,7 @@ class UniqueEventsQueueUnitTest {
     @Test
     void testThatAddHandlesNullInput() {
         UniqueEventsQueue queue = new UniqueEventsQueue();
-        Record record = null;
-        queue.add(record);
+        queue.add(null);
     }
 
     @Test
@@ -87,8 +88,7 @@ class UniqueEventsQueueUnitTest {
     @Test
     void testThatAddAllHandlesNullInput() {
         UniqueEventsQueue queue = new UniqueEventsQueue();
-        List<Record> recordList = null;
-        queue.addAll(recordList);
+        queue.addAll(null);
     }
 
     @Test
@@ -111,12 +111,7 @@ class UniqueEventsQueueUnitTest {
 
     @Test
     void testThatQueueAcceptsOnlyProperSizeLimit() {
-        try {
-            UniqueEventsQueue queue = new UniqueEventsQueue(-10);
-        } catch (IllegalArgumentException e) {}
-
-        try {
-            UniqueEventsQueue queue = new UniqueEventsQueue(0);
-        } catch (IllegalArgumentException e) {}
+        assertThatThrownBy(() -> new UniqueEventsQueue(-10)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new UniqueEventsQueue(0)).isInstanceOf(IllegalArgumentException.class);
     }
 }
