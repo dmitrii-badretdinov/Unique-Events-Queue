@@ -58,6 +58,7 @@ public final class UniqueEventsQueue {
      */
     public void addAll(List<Record> recordList) {
         // addAll assumes that it receives an immutable list.
+        // It is advised to send an immutable list to addAll to prevent an attack on its contents during the transfer.
         synchronized (lockForAddGet) {
             if (recordList != null) {
                 for (Record record : recordList) {
@@ -72,7 +73,7 @@ public final class UniqueEventsQueue {
 
     /**
      * Retrieves the oldest record from the queue. FIFO principle.
-     * 
+     *
      * @return the oldest record from the queue.
      */
     public Record get() {
