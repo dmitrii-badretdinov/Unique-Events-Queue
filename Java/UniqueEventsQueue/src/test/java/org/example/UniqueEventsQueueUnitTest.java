@@ -18,7 +18,7 @@ class UniqueEventsQueueUnitTest {
 
     @BeforeAll
     static void executeBeforeAllTests() {
-        factory = new RecordFactory(factorySeed);
+        factory = new RecordFactory(new RecordFactorySettings());
     }
 
     @Test

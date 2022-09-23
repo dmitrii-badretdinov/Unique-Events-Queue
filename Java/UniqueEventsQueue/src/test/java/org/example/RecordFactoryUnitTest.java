@@ -13,7 +13,7 @@ public class RecordFactoryUnitTest {
 
     @Test
     void testThatTheGeneratedRecordResemblesAProperRecord() {
-        RecordFactory factory = new RecordFactory(42);
+        RecordFactory factory = new RecordFactory(new RecordFactorySettings());
         Record record = factory.generateRandomTestRecord();
 
         assertThat(record.getDate().getTime()).isGreaterThan(0);

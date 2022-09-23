@@ -11,12 +11,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 public class UniqueEventsQueueConcurrencyTest {
-    static long factorySeed = 182376523;
     static RecordFactory factory;
 
     @BeforeAll
     static void executeBeforeAllTests() {
-        factory = new RecordFactory(factorySeed);
+        factory = new RecordFactory(new RecordFactorySettings());
     }
 
     @Test

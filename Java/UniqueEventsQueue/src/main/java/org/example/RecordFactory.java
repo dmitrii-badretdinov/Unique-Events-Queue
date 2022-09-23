@@ -7,14 +7,16 @@ import java.util.Random;
 
 final class RecordFactory {
     private final Random random;
+    private final IRecordFactorySettings settings;
 
-    public RecordFactory(long seed) {
-        random = new Random(seed);
+    public RecordFactory(IRecordFactorySettings settings) {
+        random = new Random(settings.getSeed());
+        this.settings = settings;
     }
 
     public Record generateRandomTestRecord(){
-        // 97 is a, 122 is z.
-        String id = generateRandomTestString(97, 122, 50);
+        String id = generateRandomTestString(settings.getLeftCharLimit(), settings.getRightCharLimit(),
+            settings.getStringMaxLength());
         float amount = generateRandomTestFloat((float) 0.001, (float) 10000000);
         Instant dateLowerBound = Instant.now().minus(Duration.ofDays(1000));
         Instant dateUpperBound = Instant.now();
