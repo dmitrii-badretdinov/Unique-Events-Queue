@@ -17,7 +17,7 @@ public class RecordUnitTest {
 
     @Test
     void testThatRecordInitializesProperlyWhenGivenNullInputs() {
-        Record record = new Record(null, 0, null);
+        new Record(null, 0, null);
     }
 
     @Test

@@ -1,6 +1,5 @@
 package org.example;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testng.collections.Lists;
@@ -13,7 +12,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UniqueEventsQueueUnitTest {
-    static long factorySeed = 182376523;
     static RecordFactory factory;
 
     @BeforeAll
