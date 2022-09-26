@@ -19,7 +19,7 @@ public final class UniqueEventsQueue {
      * Creates an instance with a default queue limit.
      */
     public UniqueEventsQueue(){
-        this(UniqueEventsQueue.calculateQueueLimit());
+        this((long) Math.pow(10, 9));
     }
 
     /**
@@ -111,20 +111,5 @@ public final class UniqueEventsQueue {
                 }
             }
         }
-    }
-
-    private static long calculateQueueLimit() {
-        /* totalMemory is the memory currently given to the program.
-         * freeMemory is currently free memory in totalMemory.
-         * maxMemory is the maximum memory that can be given to the program.
-         */
-        long allocatedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        long actualFreeMemory = Runtime.getRuntime().maxMemory() - allocatedMemory;
-        /*
-         * This step is likely done through Instrumentation, but I'm not sure how to do it properly.
-         * So the next line is a plug.
-         */
-        long objectSize = 30;
-        return actualFreeMemory / objectSize;
     }
 }
