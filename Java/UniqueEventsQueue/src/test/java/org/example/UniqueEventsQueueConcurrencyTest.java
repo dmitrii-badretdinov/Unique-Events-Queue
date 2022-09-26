@@ -96,7 +96,7 @@ public class UniqueEventsQueueConcurrencyTest {
 
     @Test
     void testThatQueueTrimsItselfToSpecifiedSize() {
-        UniqueEventsQueue queueWithLimit1 = new UniqueEventsQueue(1);
+        UniqueEventsQueue queueWithLimit1 = new UniqueEventsQueue(1, 1);
         Runnable runnable = queueWithLimit1::get;
         Thread thread1 = new Thread(runnable);
 
@@ -113,7 +113,7 @@ public class UniqueEventsQueueConcurrencyTest {
         }
         thread1.interrupt();
 
-        UniqueEventsQueue queueWithLimit2 = new UniqueEventsQueue(2);
+        UniqueEventsQueue queueWithLimit2 = new UniqueEventsQueue(2,1);
         Thread thread2 = new Thread(runnable);
 
         for(int i = 0; i < 10; i++) {

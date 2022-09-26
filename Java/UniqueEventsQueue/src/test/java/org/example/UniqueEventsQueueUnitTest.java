@@ -111,7 +111,7 @@ class UniqueEventsQueueUnitTest {
 
     @Test
     void testThatQueueAcceptsOnlyProperSizeLimit() {
-        assertThatThrownBy(() -> new UniqueEventsQueue(-10)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new UniqueEventsQueue(0)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1)).isInstanceOf(IllegalArgumentException.class);
     }
 }
