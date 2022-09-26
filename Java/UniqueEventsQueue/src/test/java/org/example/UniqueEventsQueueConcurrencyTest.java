@@ -42,7 +42,7 @@ public class UniqueEventsQueueConcurrencyTest {
                 fail("Threads failed to get the Records in specified timeframe.");
             }
         } catch (InterruptedException e) {
-            System.out.println("The wait for thread pool to shutdown was interrupted.");
+            fail("The wait for thread pool to shutdown was interrupted.");
         }
     }
 
