@@ -42,7 +42,7 @@ public class UniqueEventsQueueConcurrencyTest {
                 fail("Threads failed to get the Records in specified timeframe.");
             }
         } catch (InterruptedException e) {
-            fail("The wait for thread pool to shutdown was interrupted.");
+            fail(getMessageAboutInterruptionFromTheOutside());
         }
     }
 
@@ -62,9 +62,9 @@ public class UniqueEventsQueueConcurrencyTest {
         try {
             result = future.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException e) {
-            fail("Test thread was interrupted.");
+            fail(getMessageAboutInterruptionFromTheOutside());
         } catch (TimeoutException e) {
-            fail("Thread took too long to return a value.");
+            fail(getMessageAboutTimeout());
         }
 
         thread2.start();
@@ -72,7 +72,7 @@ public class UniqueEventsQueueConcurrencyTest {
         try {
             thread2.join(10);
         } catch (InterruptedException e) {
-            fail("Test thread was interrupted.");
+            fail(getMessageAboutInterruptionFromTheOutside());
         }
 
         assertThat(result).isEqualTo(record);
@@ -89,7 +89,7 @@ public class UniqueEventsQueueConcurrencyTest {
         try {
             thread.join(10);
         } catch (InterruptedException e) {
-            fail("Test thread was interrupted.");
+            fail(getMessageAboutInterruptionFromTheOutside());
         }
         thread.interrupt();
     }
@@ -109,7 +109,7 @@ public class UniqueEventsQueueConcurrencyTest {
         try {
             thread1.join(10);
         } catch (InterruptedException e) {
-            fail("Test thread was interrupted.");
+            fail(getMessageAboutInterruptionFromTheOutside());
         }
         thread1.interrupt();
 
@@ -127,9 +127,17 @@ public class UniqueEventsQueueConcurrencyTest {
         try {
             thread2.join(10);
         } catch (InterruptedException e) {
-            fail("Test thread was interrupted.");
+            fail(getMessageAboutInterruptionFromTheOutside());
         }
 
         thread2.interrupt();
+    }
+
+    private static String getMessageAboutInterruptionFromTheOutside() {
+        return "Test thread was interrupted from the outside.";
+    }
+
+    private static String getMessageAboutTimeout() {
+        return "Thread took too long to return a value.";
     }
 }
