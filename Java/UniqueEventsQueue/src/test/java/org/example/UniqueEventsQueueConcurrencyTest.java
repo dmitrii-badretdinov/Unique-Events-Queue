@@ -37,7 +37,7 @@ public class UniqueEventsQueueConcurrencyTest {
                 fail("Threads failed to get the Records in specified timeframe.");
             }
         } catch (InterruptedException e) {
-            fail(getMessageAboutInterruptionFromTheOutside());
+            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
         }
     }
 
@@ -58,9 +58,9 @@ public class UniqueEventsQueueConcurrencyTest {
         try {
             result = future.get(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException e) {
-            fail(getMessageAboutInterruptionFromTheOutside());
+            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
         } catch (TimeoutException e) {
-            fail(getMessageAboutTimeout());
+            fail(QueueErrorMessages.TIMEOUT.getMessage());
         }
 
         thread2.start();
@@ -68,7 +68,7 @@ public class UniqueEventsQueueConcurrencyTest {
         try {
             thread2.join(10);
         } catch (InterruptedException e) {
-            fail(getMessageAboutInterruptionFromTheOutside());
+            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
         }
 
         assertThat(result).isEqualTo(record);
@@ -85,7 +85,7 @@ public class UniqueEventsQueueConcurrencyTest {
         try {
             thread.join(10);
         } catch (InterruptedException e) {
-            fail(getMessageAboutInterruptionFromTheOutside());
+            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
         }
         thread.interrupt();
     }
@@ -105,7 +105,7 @@ public class UniqueEventsQueueConcurrencyTest {
         try {
             thread1.join(10);
         } catch (InterruptedException e) {
-            fail(getMessageAboutInterruptionFromTheOutside());
+            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
         }
         thread1.interrupt();
 
@@ -123,17 +123,9 @@ public class UniqueEventsQueueConcurrencyTest {
         try {
             thread2.join(10);
         } catch (InterruptedException e) {
-            fail(getMessageAboutInterruptionFromTheOutside());
+            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
         }
 
         thread2.interrupt();
-    }
-
-    private static String getMessageAboutInterruptionFromTheOutside() {
-        return "Test thread was interrupted from the outside.";
-    }
-
-    private static String getMessageAboutTimeout() {
-        return "Thread took too long to return a value.";
     }
 }
