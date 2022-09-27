@@ -52,12 +52,13 @@ public class UniqueEventsQueueConcurrencyTest {
         Callable<Record> callable = uniqueEventsQueue::get;
         Runnable runnable = uniqueEventsQueue::get;
         ExecutorService executorThread1 = Executors.newSingleThreadExecutor();
-        Future<Record> future = executorThread1.submit(callable);
         Thread thread2 = new Thread(runnable);
         Record result = null;
         Record record = factory.generateRandomTestRecord();
 
         uniqueEventsQueue.add(record);
+        
+        Future<Record> future = executorThread1.submit(callable);
 
         try {
             result = future.get(5, TimeUnit.SECONDS);
