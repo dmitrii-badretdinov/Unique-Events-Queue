@@ -64,11 +64,13 @@ public final class UniqueEventsQueue {
      * @param recordList a list of records to put into the queue.
      */
     public void addAll(List<Record> recordList) {
-        // addAll assumes that it receives an immutable list.
-        // It is advised to send an immutable list to addAll to prevent an attack on its contents during the transfer.
+        // addAll() assumes that it receives an immutable list. It is advised to send an immutable list to addAll
+        // to prevent an attack on its contents during the transfer.
         synchronized (lockForAddGet) {
             if (recordList != null) {
                 if(elementsIntertedAfterLastTrim + recordList.size() >= trimAfterHowManyInsertedElements) {
+                    // The current trimming strategy is to preemptively trim the queue as if all elements will be
+                    // inserted into it.
                     trimQueueToGivenLimit(recordList.size());
                 }
                 for (Record record : recordList) {
@@ -114,9 +116,12 @@ public final class UniqueEventsQueue {
     private void trimQueueToGivenLimit(long howManyTheoreticallyAdded) {
         synchronized (lockForAddGet) {
             long queueSizeAfterAddition = queue.size() + howManyTheoreticallyAdded;
+
             if (!queue.isEmpty() && queueSizeAfterAddition > queueLimit) {
+
                 long numberOfItemsToRemove = queueSizeAfterAddition - queueLimit;
                 Iterator<Record> iterator = queue.iterator();
+                
                 for (int i = 0; i < numberOfItemsToRemove; i++) {
                     if(iterator.hasNext()) {
                         iterator.remove();
