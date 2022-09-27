@@ -1,10 +1,10 @@
-package org.example;
+package org.unique_events_queue;
 
 import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
 
-final class Record {
+public final class Record {
     private final String id;
     private final float value;
     private final Date date;

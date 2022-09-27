@@ -1,7 +1,6 @@
-package org.example;
+package org.unique_events_queue;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * A thread-safe queue of unique elements.
@@ -121,7 +120,7 @@ public final class UniqueEventsQueue {
 
                 long numberOfItemsToRemove = queueSizeAfterAddition - queueLimit;
                 Iterator<Record> iterator = queue.iterator();
-                
+
                 for (int i = 0; i < numberOfItemsToRemove; i++) {
                     if(iterator.hasNext()) {
                         iterator.remove();

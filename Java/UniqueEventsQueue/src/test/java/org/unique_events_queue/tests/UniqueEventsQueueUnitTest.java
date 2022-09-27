@@ -1,8 +1,10 @@
-package org.example;
+package org.unique_events_queue.tests;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testng.collections.Lists;
+import org.unique_events_queue.Record;
+import org.unique_events_queue.UniqueEventsQueue;
 
 
 import java.util.Iterator;

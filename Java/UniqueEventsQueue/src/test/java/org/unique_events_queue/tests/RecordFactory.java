@@ -1,4 +1,6 @@
-package org.example;
+package org.unique_events_queue.tests;
+
+import org.unique_events_queue.Record;
 
 import java.time.Duration;
 import java.time.Instant;

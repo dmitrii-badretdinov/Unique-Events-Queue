@@ -1,4 +1,4 @@
-package org.example;
+package org.unique_events_queue.tests;
 
 enum QueueErrorMessages {
     TIMEOUT("The thread took too long to return a value."),

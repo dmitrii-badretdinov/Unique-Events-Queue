@@ -1,6 +1,7 @@
-package org.example;
+package org.unique_events_queue.tests;
 
 import org.junit.jupiter.api.Test;
+import org.unique_events_queue.Record;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,4 +1,4 @@
-package org.example;
+package org.unique_events_queue.tests;
 
 /**
  * The purpose of this interface is to provide an organized way to inject factory settings.
