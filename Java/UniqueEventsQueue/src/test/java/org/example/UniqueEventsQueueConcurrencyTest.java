@@ -19,11 +19,6 @@ public class UniqueEventsQueueConcurrencyTest {
     }
 
     @Test
-    void testThatTestsCanWork() {
-        assertThat(true).isEqualTo(true);
-    }
-
-    @Test
     void testThatAddAllNotifiesAllWaitingThreads() {
         UniqueEventsQueue queue = new UniqueEventsQueue();
         Runnable runnableTask = queue::get;

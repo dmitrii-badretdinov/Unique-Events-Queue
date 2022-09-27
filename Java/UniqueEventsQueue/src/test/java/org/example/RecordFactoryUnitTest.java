@@ -5,12 +5,6 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RecordFactoryUnitTest {
-
-    @Test
-    void testThatTestsCanWork() {
-        assertThat(true).isEqualTo(true);
-    }
-
     @Test
     void testThatTheGeneratedRecordResemblesAProperRecord() {
         RecordFactory factory = new RecordFactory(new RecordFactorySettings());

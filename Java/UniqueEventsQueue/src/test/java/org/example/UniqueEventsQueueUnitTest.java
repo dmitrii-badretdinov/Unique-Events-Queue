@@ -22,11 +22,6 @@ class UniqueEventsQueueUnitTest {
     }
 
     @Test
-    void testThatTestsCanWork() {
-        assertThat(true).isEqualTo(true);
-    }
-
-    @Test
     void testThatAddHandlesValidRecord() {
         UniqueEventsQueue queue = new UniqueEventsQueue();
         Record record = factory.generateRandomTestRecord();

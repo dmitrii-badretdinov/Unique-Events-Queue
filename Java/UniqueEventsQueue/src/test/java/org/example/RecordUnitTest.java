@@ -9,12 +9,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RecordUnitTest {
-
-    @Test
-    void testThatTestsCanWork() {
-        assertThat(true).isEqualTo(true);
-    }
-
     @Test
     void testThatRecordInitializesProperlyWhenGivenNullInputs() {
         new Record(null, 0, null);
