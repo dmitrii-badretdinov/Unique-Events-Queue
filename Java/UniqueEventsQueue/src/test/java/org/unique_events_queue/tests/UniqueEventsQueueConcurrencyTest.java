@@ -27,16 +27,19 @@ public class UniqueEventsQueueConcurrencyTest {
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
         threadPoolExecutor.setCorePoolSize(0);
         threadPoolExecutor.setMaximumPoolSize(50);
-        List<Record> records = new LinkedList<>();
+        List<Record> recordList = new LinkedList<>();
+
         for(int i = 0; i < 50; i++) {
             threadPoolExecutor.submit(runnableTask);
-            records.add(factory.generateRandomTestRecord());
+            recordList.add(factory.generateRandomTestRecord());
         }
-        queue.addAll(records);
+
+        queue.addAll(recordList);
         threadPoolExecutor.shutdown();
+
         try {
             if(!threadPoolExecutor.awaitTermination(50, TimeUnit.MILLISECONDS)) {
-                fail("Threads failed to get the Records in specified timeframe.");
+                fail(QueueErrorMessages.EXECUTOR_TIMEOUT.getMessage());
             }
         } catch (InterruptedException e) {
             fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
@@ -62,7 +65,7 @@ public class UniqueEventsQueueConcurrencyTest {
         } catch (InterruptedException | ExecutionException e) {
             fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
         } catch (TimeoutException e) {
-            fail(QueueErrorMessages.TIMEOUT.getMessage());
+            fail(QueueErrorMessages.THREAD_TIMEOUT.getMessage());
         }
 
         thread2.start();

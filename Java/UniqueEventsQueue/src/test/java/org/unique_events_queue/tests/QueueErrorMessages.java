@@ -1,12 +1,13 @@
 package org.unique_events_queue.tests;
 
 enum QueueErrorMessages {
-    TIMEOUT("The thread took too long to return a value."),
-    INTERRUPTED_FROM_OUTSIDE("The test thread was interrupted from the outside.");
+    INTERRUPTED_FROM_OUTSIDE("Interrupted from the outside."),
+    EXECUTOR_TIMEOUT("Executor failed to shutdown within specified timeframe."),
+    THREAD_TIMEOUT("Thread took too long to return a value.");
 
     private String message;
 
-    private QueueErrorMessages(String message) {
+    QueueErrorMessages(String message) {
         this.message = message;
     }
 
