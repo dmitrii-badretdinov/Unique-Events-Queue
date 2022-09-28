@@ -3,6 +3,7 @@ package org.unique_events_queue.tests;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.unique_events_queue.Record;
+import org.unique_events_queue.ThreadInfoProvider;
 import org.unique_events_queue.UniqueEventsQueue;
 
 import java.util.LinkedList;
@@ -22,7 +23,7 @@ public class UniqueEventsQueueConcurrencyTest {
 
     @Test
     void testThatAddAllNotifiesAllWaitingThreads() {
-        UniqueEventsQueue queue = new UniqueEventsQueue();
+        UniqueEventsQueue queue = new UniqueEventsQueue(new ThreadInfoProvider(50));
         Runnable runnableTask = queue::get;
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
         threadPoolExecutor.setCorePoolSize(0);
@@ -97,7 +98,8 @@ public class UniqueEventsQueueConcurrencyTest {
 
     @Test
     void testThatQueueTrimsItselfToSpecifiedSize() {
-        UniqueEventsQueue queueWithLimit1 = new UniqueEventsQueue(1, 1);
+        UniqueEventsQueue queueWithLimit1 = new UniqueEventsQueue(1, 1,
+            new ThreadInfoProvider(1));
         Runnable runnable = queueWithLimit1::get;
         Thread thread1 = new Thread(runnable);
 
@@ -114,7 +116,8 @@ public class UniqueEventsQueueConcurrencyTest {
         }
         thread1.interrupt();
 
-        UniqueEventsQueue queueWithLimit2 = new UniqueEventsQueue(2,1);
+        UniqueEventsQueue queueWithLimit2 = new UniqueEventsQueue(2, 1,
+            new ThreadInfoProvider(1));
         Thread thread2 = new Thread(runnable);
 
         for(int i = 0; i < 10; i++) {

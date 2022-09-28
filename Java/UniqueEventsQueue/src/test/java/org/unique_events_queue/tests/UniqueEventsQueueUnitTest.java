@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testng.collections.Lists;
 import org.unique_events_queue.Record;
+import org.unique_events_queue.ThreadInfoProvider;
 import org.unique_events_queue.UniqueEventsQueue;
 
 
@@ -17,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UniqueEventsQueueUnitTest {
     static RecordFactory factory;
+    static final ThreadInfoProvider provider = new ThreadInfoProvider(1);
 
     @BeforeAll
     static void executeBeforeAllTests() {
@@ -108,7 +110,9 @@ class UniqueEventsQueueUnitTest {
 
     @Test
     void testThatQueueAcceptsOnlyProperSizeLimit() {
-        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1)).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1, provider))
+            .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1, provider))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 }

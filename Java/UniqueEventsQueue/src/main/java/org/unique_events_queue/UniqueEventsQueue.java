@@ -16,12 +16,17 @@ public final class UniqueEventsQueue {
     private final long queueLimit;
     private long elementsIntertedAfterLastTrim;
     private final long trimAfterHowManyInsertedElements;
+    private final ThreadInfoProvider threadInfoProvider;
 
     /**
-     * Creates an instance with a default queue limit.
+     * Creates an instance with a default parameters.
      */
     public UniqueEventsQueue(){
-        this((long) Math.pow(10, 9), 1000);
+        this((long) Math.pow(10, 9), 1000, new ThreadInfoProvider(50));
+    }
+
+    public UniqueEventsQueue(ThreadInfoProvider provider) {
+        this((long) Math.pow(10, 9), 1000, provider);
     }
 
     /**
@@ -30,15 +35,18 @@ public final class UniqueEventsQueue {
      * @param queueLimitParameter a queue limit.
      * @param trimAfterHowManyInsertedElements every that many items, it is checked if the queue size exceeds
      * queueLimitParameter. In other words, the queue size may exceed the limit by that many elements at most.
+     * @param provider gives information about how many waiting get() threads there may be.
      * @throws IllegalArgumentException if queue limit is less than 1
      */
-    public UniqueEventsQueue(long queueLimitParameter, long trimAfterHowManyInsertedElements) throws IllegalArgumentException {
+    public UniqueEventsQueue(long queueLimitParameter,
+         long trimAfterHowManyInsertedElements, ThreadInfoProvider provider) throws IllegalArgumentException {
         if(queueLimitParameter < 1)
         {
             throw new IllegalArgumentException("Queue size cannot be 0 or negative.");
         }
         queueLimit = queueLimitParameter;
         this.trimAfterHowManyInsertedElements = trimAfterHowManyInsertedElements;
+        this.threadInfoProvider = provider;
     }
 
     /**
@@ -72,10 +80,17 @@ public final class UniqueEventsQueue {
                     // inserted into it.
                     trimQueueToGivenLimit(recordList.size());
                 }
+                long numberOfItemsInserted = 0;
                 for (Record record : recordList) {
                     if(record != null && queue.add(record)) {
-                        lockForAddGet.notify();
+                        numberOfItemsInserted++;
                     }
+                }
+                long howManyTreadsToNotify =
+                    numberOfItemsInserted > threadInfoProvider.retrieveTheNumberOfGetThreads() ?
+                    threadInfoProvider.retrieveTheNumberOfGetThreads() : numberOfItemsInserted;
+                for(int i = 0; i < howManyTreadsToNotify; i++) {
+                    lockForAddGet.notify();
                 }
             }
         }
