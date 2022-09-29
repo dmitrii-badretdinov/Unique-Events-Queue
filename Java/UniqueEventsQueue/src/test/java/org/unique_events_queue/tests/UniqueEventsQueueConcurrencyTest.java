@@ -6,6 +6,7 @@ import org.unique_events_queue.Record;
 import org.unique_events_queue.ThreadInfoProvider;
 import org.unique_events_queue.UniqueEventsQueue;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -97,9 +98,10 @@ public class UniqueEventsQueueConcurrencyTest {
     }
 
     @Test
-    void testThatQueueTrimsItselfToSpecifiedSize() {
+    void testThatQueueTrimsIfTrimIntervalIs1() {
         UniqueEventsQueue queueWithLimit1 = new UniqueEventsQueue(1, 1,
             new ThreadInfoProvider(1));
+
         Runnable runnable = queueWithLimit1::get;
         Thread thread1 = new Thread(runnable);
 
@@ -135,5 +137,112 @@ public class UniqueEventsQueueConcurrencyTest {
         }
 
         thread2.interrupt();
+    }
+
+    @Test
+    void testThatQueueTrimsForAdd() {
+        long numberOfRecords = 50;
+        UniqueEventsQueue queue = new UniqueEventsQueue(1, numberOfRecords,
+            new ThreadInfoProvider(1));
+
+        for(int i = 0; i < numberOfRecords; i++) {
+            queue.add(factory.generateRandomTestRecord());
+        }
+
+        queue.get();
+        assertThat(checkThatQueueIsEmpty(queue)).isEqualTo(true);
+    }
+
+    @Test
+    void testThatQueueTrimsForAddAll() {
+        long numberOfRecords = 50;
+        UniqueEventsQueue queue = new UniqueEventsQueue(1, numberOfRecords, new ThreadInfoProvider(1));
+        List<Record> firstRecordList = new LinkedList<>();
+        List<Record> secondRecordList = new LinkedList<>();
+
+        for(int i = 0; i < numberOfRecords; i++) {
+            firstRecordList.add(factory.generateRandomTestRecord());
+            secondRecordList.add(factory.generateRandomTestRecord());
+        }
+
+        queue.addAll(firstRecordList);
+        queue.addAll(secondRecordList);
+        Iterator<Record> iterator = secondRecordList.iterator();
+        for(int i = 0; i < secondRecordList.size(); i++) {
+            assertThat(queue.get()).isEqualTo(iterator.next());
+        }
+    }
+
+    @Test
+    void testThatQueueDoesNotTrimWhenTrimIntervalIsNotReachedForAdd() {
+        long numberOfRecords = 50;
+        UniqueEventsQueue queue = new UniqueEventsQueue(1,
+            numberOfRecords + 1, new ThreadInfoProvider(1));
+
+        for(int i = 0; i < numberOfRecords; i++) {
+            queue.add(factory.generateRandomTestRecord());
+        }
+
+        drainRecords(queue, numberOfRecords);
+    }
+
+    @Test
+    void testThatQueueDoesNotTrimWhenTrimIntervalIsNotReachedForAddAll() {
+        long numberOfRecords = 50;
+        UniqueEventsQueue queue = new UniqueEventsQueue(1,
+            numberOfRecords + 1, new ThreadInfoProvider(1));
+        List<Record> recordList = new LinkedList<>();
+
+        for(int i = 0; i < numberOfRecords; i++) {
+            recordList.add(factory.generateRandomTestRecord());
+        }
+
+        queue.addAll(recordList);
+        drainRecords(queue, numberOfRecords);
+        assertThat(checkThatQueueIsEmpty(queue)).isEqualTo(true);
+    }
+
+    private static void drainRecords(UniqueEventsQueue queue, long numberOfRecords) {
+        Runnable runnable = queue::get;
+        ExecutorService executor = Executors.newCachedThreadPool();
+        List<Future<?>> futureList = new LinkedList<>();
+
+        for(int i = 0; i < numberOfRecords; i++) {
+            futureList.add(executor.submit(runnable));
+        }
+        for(Future<?> future : futureList) {
+            try {
+                future.get(1, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException | ExecutionException e) {
+                fail(getMessageAboutInterruptionFromTheOutside());
+            } catch (TimeoutException e) {
+                fail(getMessageAboutTimeout());
+            }
+        }
+    }
+
+    private static boolean checkThatQueueIsEmpty(UniqueEventsQueue queue) {
+        Callable<Record> callable = queue::get;
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<Record> future = executor.submit(callable);
+        boolean queueIsEmpty = false;
+
+        try {
+            future.get(1, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException e) {
+            fail(getMessageAboutInterruptionFromTheOutside());
+        } catch (TimeoutException e) {
+            queueIsEmpty = true;
+            executor.shutdownNow();
+        }
+
+        return queueIsEmpty;
+    }
+    private static String getMessageAboutInterruptionFromTheOutside() {
+        return "Test thread was interrupted from the outside.";
+    }
+
+    private static String getMessageAboutTimeout() {
+        return "Thread took too long to return a value.";
     }
 }

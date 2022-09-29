@@ -58,6 +58,7 @@ public final class UniqueEventsQueue {
         synchronized (lockForAddGet) {
             if (record != null && queue.add(record)) {
                 lockForAddGet.notify();
+                elementsIntertedAfterLastTrim++;
                 if(elementsIntertedAfterLastTrim >= trimAfterHowManyInsertedElements) {
                     trimQueueToGivenLimit(0);
                 }
@@ -86,6 +87,7 @@ public final class UniqueEventsQueue {
                         numberOfItemsInserted++;
                     }
                 }
+                elementsIntertedAfterLastTrim += numberOfItemsInserted;
                 long howManyTreadsToNotify =
                     numberOfItemsInserted > threadInfoProvider.retrieveTheNumberOfGetThreads() ?
                     threadInfoProvider.retrieveTheNumberOfGetThreads() : numberOfItemsInserted;
@@ -131,13 +133,14 @@ public final class UniqueEventsQueue {
         synchronized (lockForAddGet) {
             long queueSizeAfterAddition = queue.size() + howManyTheoreticallyAdded;
 
-            if (!queue.isEmpty() && queueSizeAfterAddition > queueLimit) {
+            if (queueSizeAfterAddition > queueLimit) {
 
                 long numberOfItemsToRemove = queueSizeAfterAddition - queueLimit;
                 Iterator<Record> iterator = queue.iterator();
 
-                for (int i = 0; i < numberOfItemsToRemove; i++) {
+                for (int i = 0; iterator.hasNext() && i < numberOfItemsToRemove; i++) {
                     if(iterator.hasNext()) {
+                        iterator.next();
                         iterator.remove();
                     }
                 }
