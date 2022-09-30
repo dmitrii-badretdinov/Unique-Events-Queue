@@ -58,8 +58,7 @@ class UniqueEventsQueueUnitTest {
         UniqueEventsQueue queue = new UniqueEventsQueue();
         Record record = factory.generateRandomTestRecord();
         queue.add(record);
-        Object result = queue.get();
-        assertThat(result).isEqualTo(record);
+        assertThat(queue.get()).isEqualTo(record);
     }
 
     @Test
