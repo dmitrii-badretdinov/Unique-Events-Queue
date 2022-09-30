@@ -139,10 +139,8 @@ public final class UniqueEventsQueue {
                 Iterator<Record> iterator = queue.iterator();
 
                 for (int i = 0; iterator.hasNext() && i < numberOfItemsToRemove; i++) {
-                    if(iterator.hasNext()) {
-                        iterator.next();
-                        iterator.remove();
-                    }
+                    iterator.next();
+                    iterator.remove();
                 }
             }
             elementsInsertedAfterLastTrim = 0;
