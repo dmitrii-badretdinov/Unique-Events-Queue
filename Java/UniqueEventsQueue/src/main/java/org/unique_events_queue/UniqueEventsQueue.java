@@ -14,7 +14,7 @@ public final class UniqueEventsQueue {
     private final LinkedHashSet<Record> queue = new LinkedHashSet<>();
     private final Object lockForAddGet = new Object();
     private final long queueLimit;
-    private long elementsIntertedAfterLastTrim;
+    private long elementsInsertedAfterLastTrim;
     private final long trimAfterHowManyInsertedElements;
     private final ThreadInfoProvider threadInfoProvider;
 
@@ -58,8 +58,8 @@ public final class UniqueEventsQueue {
         synchronized (lockForAddGet) {
             if (record != null && queue.add(record)) {
                 lockForAddGet.notify();
-                elementsIntertedAfterLastTrim++;
-                if(elementsIntertedAfterLastTrim >= trimAfterHowManyInsertedElements) {
+                elementsInsertedAfterLastTrim++;
+                if(elementsInsertedAfterLastTrim >= trimAfterHowManyInsertedElements) {
                     trimQueueToGivenLimit(0);
                 }
             }
@@ -76,7 +76,7 @@ public final class UniqueEventsQueue {
         // to prevent an attack on its contents during the transfer.
         synchronized (lockForAddGet) {
             if (recordList != null) {
-                if(elementsIntertedAfterLastTrim + recordList.size() >= trimAfterHowManyInsertedElements) {
+                if(elementsInsertedAfterLastTrim + recordList.size() >= trimAfterHowManyInsertedElements) {
                     // The current trimming strategy is to preemptively trim the queue as if all elements will be
                     // inserted into it.
                     trimQueueToGivenLimit(recordList.size());
@@ -87,7 +87,7 @@ public final class UniqueEventsQueue {
                         numberOfItemsInserted++;
                     }
                 }
-                elementsIntertedAfterLastTrim += numberOfItemsInserted;
+                elementsInsertedAfterLastTrim += numberOfItemsInserted;
                 long howManyTreadsToNotify =
                     numberOfItemsInserted > threadInfoProvider.retrieveTheNumberOfGetThreads() ?
                     threadInfoProvider.retrieveTheNumberOfGetThreads() : numberOfItemsInserted;
@@ -145,7 +145,7 @@ public final class UniqueEventsQueue {
                     }
                 }
             }
-            elementsIntertedAfterLastTrim = 0;
+            elementsInsertedAfterLastTrim = 0;
         }
     }
 }
