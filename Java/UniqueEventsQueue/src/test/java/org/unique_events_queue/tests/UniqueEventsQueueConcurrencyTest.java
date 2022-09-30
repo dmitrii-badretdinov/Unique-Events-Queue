@@ -209,9 +209,9 @@ public class UniqueEventsQueueConcurrencyTest {
             try {
                 future.get(1, TimeUnit.MILLISECONDS);
             } catch (InterruptedException | ExecutionException e) {
-                fail(getMessageAboutInterruptionFromTheOutside());
+                fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
             } catch (TimeoutException e) {
-                fail(getMessageAboutTimeout());
+                fail(QueueErrorMessages.THREAD_TIMEOUT.getMessage());
             }
         }
     }
@@ -225,19 +225,12 @@ public class UniqueEventsQueueConcurrencyTest {
         try {
             future.get(1, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException e) {
-            fail(getMessageAboutInterruptionFromTheOutside());
+            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
         } catch (TimeoutException e) {
             queueIsEmpty = true;
             executor.shutdownNow();
         }
 
         return queueIsEmpty;
-    }
-    private static String getMessageAboutInterruptionFromTheOutside() {
-        return "Test thread was interrupted from the outside.";
-    }
-
-    private static String getMessageAboutTimeout() {
-        return "Thread took too long to return a value.";
     }
 }
