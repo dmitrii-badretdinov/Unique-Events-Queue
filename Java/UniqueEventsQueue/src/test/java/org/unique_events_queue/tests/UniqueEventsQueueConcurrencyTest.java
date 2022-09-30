@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 public class UniqueEventsQueueConcurrencyTest {
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
+    static final ThreadInfoProvider oneThreadProvider = new ThreadInfoProvider(1);
 
     @Test
     void testThatAddAllNotifiesAllWaitingThreads() {
@@ -94,7 +95,7 @@ public class UniqueEventsQueueConcurrencyTest {
     @Test
     void testThatQueueTrimsIfTrimIntervalIs1() {
         UniqueEventsQueue queueWithLimit1 = new UniqueEventsQueue(1, 1,
-            new ThreadInfoProvider(1));
+            oneThreadProvider);
 
         Runnable runnable = queueWithLimit1::get;
         Thread thread1 = new Thread(runnable);
@@ -113,7 +114,7 @@ public class UniqueEventsQueueConcurrencyTest {
         thread1.interrupt();
 
         UniqueEventsQueue queueWithLimit2 = new UniqueEventsQueue(2, 1,
-            new ThreadInfoProvider(1));
+            oneThreadProvider);
         Thread thread2 = new Thread(runnable);
 
         for(int i = 0; i < 10; i++) {
@@ -137,7 +138,7 @@ public class UniqueEventsQueueConcurrencyTest {
     void testThatQueueTrimsForAdd() {
         long numberOfRecords = 50;
         UniqueEventsQueue queue = new UniqueEventsQueue(1, numberOfRecords,
-            new ThreadInfoProvider(1));
+            oneThreadProvider);
 
         for(int i = 0; i < numberOfRecords; i++) {
             queue.add(factory.generateRandomTestRecord());
@@ -150,7 +151,7 @@ public class UniqueEventsQueueConcurrencyTest {
     @Test
     void testThatQueueTrimsForAddAll() {
         long numberOfRecords = 50;
-        UniqueEventsQueue queue = new UniqueEventsQueue(1, numberOfRecords, new ThreadInfoProvider(1));
+        UniqueEventsQueue queue = new UniqueEventsQueue(1, numberOfRecords, oneThreadProvider);
         List<Record> firstRecordList = new LinkedList<>();
         List<Record> secondRecordList = new LinkedList<>();
 
@@ -171,7 +172,7 @@ public class UniqueEventsQueueConcurrencyTest {
     void testThatQueueDoesNotTrimWhenTrimIntervalIsNotReachedForAdd() {
         long numberOfRecords = 50;
         UniqueEventsQueue queue = new UniqueEventsQueue(1,
-            numberOfRecords + 1, new ThreadInfoProvider(1));
+            numberOfRecords + 1, oneThreadProvider);
 
         for(int i = 0; i < numberOfRecords; i++) {
             queue.add(factory.generateRandomTestRecord());
@@ -184,7 +185,7 @@ public class UniqueEventsQueueConcurrencyTest {
     void testThatQueueDoesNotTrimWhenTrimIntervalIsNotReachedForAddAll() {
         long numberOfRecords = 50;
         UniqueEventsQueue queue = new UniqueEventsQueue(1,
-            numberOfRecords + 1, new ThreadInfoProvider(1));
+            numberOfRecords + 1, oneThreadProvider);
         List<Record> recordList = new LinkedList<>();
 
         for(int i = 0; i < numberOfRecords; i++) {

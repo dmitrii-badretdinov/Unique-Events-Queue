@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UniqueEventsQueueUnitTest {
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
-    static final ThreadInfoProvider provider = new ThreadInfoProvider(1);
+    static final ThreadInfoProvider oneThreadProvider = new ThreadInfoProvider(1);
 
     @Test
     void testThatAddHandlesValidRecord() {
@@ -104,9 +104,9 @@ class UniqueEventsQueueUnitTest {
 
     @Test
     void testThatQueueAcceptsOnlyProperSizeLimit() {
-        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1, provider))
+        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1, oneThreadProvider))
             .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1, provider))
+        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1, oneThreadProvider))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }
