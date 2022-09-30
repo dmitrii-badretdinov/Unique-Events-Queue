@@ -1,6 +1,5 @@
 package org.unique_events_queue.tests;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.unique_events_queue.Record;
 import org.unique_events_queue.ThreadInfoProvider;
@@ -15,12 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 public class UniqueEventsQueueConcurrencyTest {
-    static RecordFactory factory;
-
-    @BeforeAll
-    static void executeBeforeAllTests() {
-        factory = new RecordFactory(new RecordFactorySettings());
-    }
+    static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
 
     @Test
     void testThatAddAllNotifiesAllWaitingThreads() {

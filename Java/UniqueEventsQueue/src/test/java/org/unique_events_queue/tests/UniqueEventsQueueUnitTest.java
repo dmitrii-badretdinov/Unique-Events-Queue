@@ -1,6 +1,5 @@
 package org.unique_events_queue.tests;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testng.collections.Lists;
 import org.unique_events_queue.Record;
@@ -17,13 +16,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 class UniqueEventsQueueUnitTest {
-    static RecordFactory factory;
+    static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
     static final ThreadInfoProvider provider = new ThreadInfoProvider(1);
-
-    @BeforeAll
-    static void executeBeforeAllTests() {
-        factory = new RecordFactory(new RecordFactorySettings());
-    }
 
     @Test
     void testThatAddHandlesValidRecord() {
