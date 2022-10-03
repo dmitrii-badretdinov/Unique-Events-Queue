@@ -25,95 +25,95 @@ class UniqueEventsQueueUnitTest {
      * The executor is used because no way was found to do it without threads.
      */
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
-    static final ThreadInfoProvider oneThreadProvider = new ThreadInfoProvider(1);
+    static final ThreadInfoProvider oneThreadStub = new ThreadInfoProvider(1);
 
     @Test
     void testThatAddHandlesValidRecord() {
-        UniqueEventsQueue queue = new UniqueEventsQueue();
-        Record record = factory.generateRandomTestRecord();
-        queue.add(record);
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
+        Record record = factory.generateRandomFakeRecord();
+        mockQueue.add(record);
     }
 
     @Test
     void testThatAddHandlesNullInput() {
-        UniqueEventsQueue queue = new UniqueEventsQueue();
-        queue.add(null);
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
+        mockQueue.add(null);
     }
 
     @Test
     void testThatAddDoesNotAddNullsToQueue() {
-        UniqueEventsQueue queue = new UniqueEventsQueue();
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
         List<Record> recordList = new LinkedList<>();
         for (int i = 0; i < 2; i++) {
-            recordList.add(factory.generateRandomTestRecord());
+            recordList.add(factory.generateRandomFakeRecord());
         }
         Iterator<Record> inputIterator = recordList.iterator();
-        Iterator<Record> outputIterator = recordList.iterator();
+        Iterator<Record> mockOutputIterator = recordList.iterator();
 
-        queue.add(null);
-        queue.add(inputIterator.next());
-        queue.add(null);
-        queue.add(inputIterator.next());
-        queue.add(null);
+        mockQueue.add(null);
+        mockQueue.add(inputIterator.next());
+        mockQueue.add(null);
+        mockQueue.add(inputIterator.next());
+        mockQueue.add(null);
 
         for(int i = 0; i < 2; i++) {
-            assertThat(queue.get()).isEqualTo(outputIterator.next());
+            assertThat(mockQueue.get()).isEqualTo(mockOutputIterator.next());
         }
     }
 
     @Test
     void testThatGetReturnsRecord() {
-        UniqueEventsQueue queue = new UniqueEventsQueue();
-        Record record = factory.generateRandomTestRecord();
-        queue.add(record);
-        assertThat(queue.get()).isEqualTo(record);
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
+        Record mockRecord = factory.generateRandomFakeRecord();
+        mockQueue.add(mockRecord);
+        assertThat(mockQueue.get()).isEqualTo(mockRecord);
     }
 
     @Test
     void testThatAddAllInsertsRecordsIntoQueue() {
-        UniqueEventsQueue queue = new UniqueEventsQueue();
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
         List<Record> recordList = new LinkedList<>();
         for (int i = 0; i < 3; ++i) {
-            recordList.add(factory.generateRandomTestRecord());
+            recordList.add(factory.generateRandomFakeRecord());
         }
-        Iterator<Record> iterator = recordList.iterator();
+        Iterator<Record> mockIterator = recordList.iterator();
 
-        queue.addAll(recordList);
+        mockQueue.addAll(recordList);
 
         for (int i = 0; i < 3; ++i) {
-            assertThat(queue.get()).isEqualTo(iterator.next());
+            assertThat(mockQueue.get()).isEqualTo(mockIterator.next());
         }
     }
 
     @Test
     void testThatAddAllHandlesNullInput() {
-        UniqueEventsQueue queue = new UniqueEventsQueue();
-        queue.addAll(null);
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
+        mockQueue.addAll(null);
     }
 
     @Test
     void testThatAddAllHandlesListOfNulls() {
-        UniqueEventsQueue queue = new UniqueEventsQueue();
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
         List<Record> list = Lists.newArrayList(null, null, null);
 
-        queue.addAll(list);
+        mockQueue.addAll(list);
     }
 
     @Test
     void testThatAddAllHandlesListOfNullsAndRecords() {
-        UniqueEventsQueue queue = new UniqueEventsQueue();
-        Record record1 = factory.generateRandomTestRecord();
-        Record record2 = factory.generateRandomTestRecord();
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
+        Record record1 = factory.generateRandomFakeRecord();
+        Record record2 = factory.generateRandomFakeRecord();
         List<Record> list = Lists.newArrayList(null, record1, null, record2, null);
 
-        queue.addAll(list);
+        mockQueue.addAll(list);
     }
 
     @Test
     void testThatQueueAcceptsOnlyProperSizeLimit() {
-        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1, oneThreadProvider))
+        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1, oneThreadStub))
             .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1, oneThreadProvider))
+        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1, oneThreadStub))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }

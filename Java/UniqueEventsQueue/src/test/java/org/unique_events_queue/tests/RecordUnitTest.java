@@ -27,8 +27,8 @@ public class RecordUnitTest {
         Record record = new Record("182134jo328s", (float) 1.34124, originalDate);
         Date dateToChangeMaliciously = record.getDate();
         dateToChangeMaliciously.setTime(0);
-        Date dateToCheck = record.getDate();
-        assertThat(dateToCheck).isEqualTo(originalDate);
+        Date mockDate = record.getDate();
+        assertThat(mockDate).isEqualTo(originalDate);
     }
 
     @Test

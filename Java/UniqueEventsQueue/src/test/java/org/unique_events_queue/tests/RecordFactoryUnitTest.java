@@ -9,10 +9,10 @@ public class RecordFactoryUnitTest {
     @Test
     void testThatTheGeneratedRecordResemblesAProperRecord() {
         RecordFactory factory = new RecordFactory(new RecordFactorySettings());
-        Record record = factory.generateRandomTestRecord();
+        Record mockRecord = factory.generateRandomFakeRecord();
 
-        assertThat(record.getDate().getTime()).isGreaterThan(0);
-        assertThat(record.getValue()).isGreaterThanOrEqualTo(0);
-        assertThat(record.getId().length()).isGreaterThan(0);
+        assertThat(mockRecord.getDate().getTime()).isGreaterThan(0);
+        assertThat(mockRecord.getValue()).isGreaterThanOrEqualTo(0);
+        assertThat(mockRecord.getId().length()).isGreaterThan(0);
     }
 }

@@ -16,7 +16,7 @@ final class RecordFactory {
         this.settings = settings;
     }
 
-    public Record generateRandomTestRecord(){
+    public Record generateRandomFakeRecord(){
         String id = generateRandomTestString(settings.getLeftCharLimit(), settings.getRightCharLimit(),
             settings.getStringMaxLength());
         float amount = generateRandomTestFloat(settings.getFloatMin(), settings.getFloatMax());
