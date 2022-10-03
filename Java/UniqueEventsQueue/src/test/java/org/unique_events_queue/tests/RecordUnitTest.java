@@ -41,29 +41,38 @@ public class RecordUnitTest {
     }
 
     @Test
-    void testThatHashcodeAndEqualsAreProperlyChanged() {
-        Date date = new Date(0);
-        Record original = new Record("first", (float) 1.2342, date);
-        Record copy = new Record("first", (float) 1.2342, date);
+    void testThatIdenticalRecordIsDetected() {
+        Record mockOriginal = new Record("0", 0, new Date(0));
+        Record mockCopy = new Record("0", 0, new Date(0));
+        assertThat(mockOriginal).isNotSameAs(mockCopy);
+        assertThat(mockOriginal).isEqualTo(mockCopy);
+        assertThat(mockOriginal.hashCode()).isEqualTo(mockCopy.hashCode());
+    }
 
-        Record otherId = new Record("second", (float) 1.2342, date);
-        Record otherAmount = new Record("first", (float) 1.212, date);
-        Record otherTime = new Record("first", (float) 1.2342, new Date(1));
-        List<Record> recordList = Arrays.asList(otherId, otherTime, otherAmount);
+    @Test
+    void testThatDifferentIdIsDetected() {
+        Record mockOriginal = new Record("1", 0, new Date(0));
+        Record mockDifferentId = new Record("2", 0, new Date(0));
+        assertThat(mockOriginal).isNotSameAs(mockDifferentId);
+        assertThat(mockOriginal).isNotEqualTo(mockDifferentId);
+        assertThat(mockOriginal.hashCode()).isNotEqualTo(mockDifferentId.hashCode());
+    }
 
-        assertThat(original).isNotSameAs(copy);
-        assertThat(original).isEqualTo(copy);
-        assertThat(original.hashCode()).isEqualTo(copy.hashCode());
-        /* The warning about not using copy assignment is suppressed because the nullification prevents the misuse of
-         * copy in the loop-check below.
-         */
-        //noinspection UnusedAssignment
-        copy = null;
+    @Test
+    void testThatDifferentValueIsDetected() {
+        Record mockOriginal = new Record("0", 0, new Date(0));
+        Record mockDifferentValue = new Record("0", 1, new Date(0));
+        assertThat(mockOriginal).isNotSameAs(mockDifferentValue);
+        assertThat(mockOriginal).isNotEqualTo(mockDifferentValue);
+        assertThat(mockOriginal.hashCode()).isNotEqualTo(mockDifferentValue.hashCode());
+    }
 
-        for (Record record : recordList) {
-            assertThat(original).isNotSameAs(record);
-            assertThat(original).isNotEqualTo(record);
-            assertThat(original.hashCode()).isNotEqualTo(record.hashCode());
-        }
+    @Test
+    void testThatDifferentDateIsDetected() {
+        Record mockOriginal = new Record("0", 0, new Date(0));
+        Record mockDifferentDate = new Record("0", 0, new Date(1));
+        assertThat(mockOriginal).isNotSameAs(mockDifferentDate);
+        assertThat(mockOriginal).isNotEqualTo(mockDifferentDate);
+        assertThat(mockOriginal.hashCode()).isNotEqualTo(mockDifferentDate.hashCode());
     }
 }
