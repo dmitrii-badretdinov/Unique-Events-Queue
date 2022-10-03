@@ -20,8 +20,7 @@ public final class Record {
     {
         this.id = idInput == null ? "" : idInput;
         this.value = amountValue;
-        this.date = dateInput == null ?
-                new Date(Instant.now().getEpochSecond()) : new Date(dateInput.getTime());
+        this.date = (dateInput == null) ? new Date(0) : new Date(dateInput.getTime());
     }
 
     public Record (Record recordInput) {
