@@ -32,12 +32,12 @@ public class RecordUnitTest {
 
     @Test
     void testThatDateIsImmutable() {
-        Date originalDate = new Date(System.currentTimeMillis());
-        Record record = new Record("182134jo328s", (float) 1.34124, originalDate);
+        Date mockRandomDate = new Date(128734628);
+        Record record = new Record("test", 0, mockRandomDate);
         Date dateToChangeMaliciously = record.getDate();
         dateToChangeMaliciously.setTime(0);
         Date mockDate = record.getDate();
-        assertThat(mockDate).isEqualTo(originalDate);
+        assertThat(mockDate).isEqualTo(mockRandomDate);
     }
 
     @Test
