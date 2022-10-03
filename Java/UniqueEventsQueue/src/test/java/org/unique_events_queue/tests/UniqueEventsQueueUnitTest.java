@@ -15,7 +15,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
+/**
+ * Tests the basic non-concurrent functionality of the queue class.
+ */
 class UniqueEventsQueueUnitTest {
+    /*
+     * Note: the tests check if the queue is empty by creating an executor that spawns a thread.
+     * The company's Code Style Guide says the use of threads in Unit Tests is not appreciated.
+     * The executor is used because no way was found to do it without threads.
+     */
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
     static final ThreadInfoProvider oneThreadProvider = new ThreadInfoProvider(1);
 
