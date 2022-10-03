@@ -42,13 +42,13 @@ public class RecordUnitTest {
 
     @Test
     void testThatHashcodeAndEqualsAreProperlyChanged() {
-        Date date = new Date(System.currentTimeMillis());
+        Date date = new Date(0);
         Record original = new Record("first", (float) 1.2342, date);
         Record copy = new Record("first", (float) 1.2342, date);
 
         Record otherId = new Record("second", (float) 1.2342, date);
         Record otherAmount = new Record("first", (float) 1.212, date);
-        Record otherTime = new Record("first", (float) 1.2342, new Date(System.currentTimeMillis() + 1));
+        Record otherTime = new Record("first", (float) 1.2342, new Date(1));
         List<Record> recordList = Arrays.asList(otherId, otherTime, otherAmount);
 
         assertThat(original).isNotSameAs(copy);
