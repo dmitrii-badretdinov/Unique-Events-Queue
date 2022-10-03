@@ -31,7 +31,7 @@ public final class Record {
         } else {
             this.id = "";
             this.value = 0;
-            this.date = new Date(Instant.now().getEpochSecond());
+            this.date = new Date(0);
         }
     }
 
