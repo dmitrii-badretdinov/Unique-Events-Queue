@@ -7,7 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RecordFactoryUnitTest {
     @Test
-    void testThatTheGeneratedRecordResemblesAProperRecord() {
+    void testThatGeneratedRecordMeetsBasicExpectations() {
         RecordFactory factory = new RecordFactory(new RecordFactorySettings());
         Record mockRecord = factory.generateRandomFakeRecord();
 

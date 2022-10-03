@@ -11,12 +11,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RecordUnitTest {
     @Test
-    void testThatRecordInitializesProperlyWhenGivenNullInputs() {
+    void testThatRecordInstantiatesWithNullInputs() {
         new Record(null, 0, null);
     }
 
     @Test
-    void testThatRecordInitializesProperlyWhenGivenAnotherRecord() {
+    void testThatRecordInstantiatesWithAnotherRecord() {
         Record record = new Record(null, 0, null);
         new Record(record);
     }
