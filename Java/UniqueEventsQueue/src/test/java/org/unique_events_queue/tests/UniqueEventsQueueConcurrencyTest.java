@@ -19,21 +19,24 @@ public class UniqueEventsQueueConcurrencyTest {
 
     @Test
     void testThatAddAllNotifiesAllWaitingThreads() {
+        // Arrange
         UniqueEventsQueue queue = new UniqueEventsQueue(new ThreadInfoProvider(50));
         Runnable runnableTask = queue::get;
         ThreadPoolExecutor mockThreadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
         mockThreadPoolExecutor.setCorePoolSize(0);
         mockThreadPoolExecutor.setMaximumPoolSize(50);
-        List<Record> recordList = new LinkedList<>();
 
+        List<Record> recordList = new LinkedList<>();
         for(int i = 0; i < 50; i++) {
             mockThreadPoolExecutor.submit(runnableTask);
             recordList.add(factory.generateRandomFakeRecord());
         }
 
+        // Act
         queue.addAll(recordList);
-        mockThreadPoolExecutor.shutdown();
 
+        // Assert
+        mockThreadPoolExecutor.shutdown();
         try {
             if(!mockThreadPoolExecutor.awaitTermination(50, TimeUnit.MILLISECONDS)) {
                 fail(QueueErrorMessages.EXECUTOR_TIMEOUT.getMessage());
