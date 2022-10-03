@@ -3,6 +3,7 @@ package org.unique_events_queue.tests;
 import org.junit.jupiter.api.Test;
 import org.unique_events_queue.Record;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -17,8 +18,16 @@ public class RecordUnitTest {
 
     @Test
     void testThatRecordInstantiatesWithAnotherRecord() {
-        Record record = new Record(null, 0, null);
-        new Record(record);
+        String randomID = "K4s1o3a723";
+        float randomValue = (float) 1.1923;
+        Date randomDate = new Date(1278346);
+        Record record = new Record(randomID, randomValue, randomDate);
+
+        Record mockRecord = new Record(record);
+
+        assertThat(mockRecord.getId()).isEqualTo(randomID);
+        assertThat(mockRecord.getValue()).isEqualTo(randomValue);
+        assertThat(mockRecord.getId()).isEqualTo(randomID);
     }
 
     @Test
