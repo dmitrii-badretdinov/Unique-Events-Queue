@@ -96,45 +96,54 @@ public class UniqueEventsQueueConcurrencyTest {
     }
 
     @Test
-    void testThatQueueTrimsIfTrimIntervalIs1() {
-        UniqueEventsQueue queueWithLimit1 = new UniqueEventsQueue(1, 1,
+    void testThatQueueTrimsIfQueueLimit1AndTrimInterval1() {
+        // Arrange
+        UniqueEventsQueue queue = new UniqueEventsQueue(1, 1,
             oneThreadStub);
-
-        Runnable runnable = queueWithLimit1::get;
-        Thread thread1 = new Thread(runnable);
-
+        Runnable runnable = queue::get;
+        Thread thread = new Thread(runnable);
         for(int i = 0; i < 10; i++) {
-            queueWithLimit1.add(factory.generateRandomFakeRecord());
+            queue.add(factory.generateRandomFakeRecord());
         }
 
-        queueWithLimit1.get();
-        thread1.start();
+        // Act
+        queue.get();
+
+        // Assert
+        thread.start();
         try {
-            thread1.join(10);
+            thread.join(10);
         } catch (InterruptedException e) {
             fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
         }
-        thread1.interrupt();
+        thread.interrupt();
+    }
 
-        UniqueEventsQueue queueWithLimit2 = new UniqueEventsQueue(2, 1,
+    @Test void testThatQueueTrimsIfQueueLimit2AndTrimInterval1() {
+        // Arrange
+        UniqueEventsQueue queue = new UniqueEventsQueue(2, 1,
             oneThreadStub);
-        Thread thread2 = new Thread(runnable);
-
+        Runnable runnable = queue::get;
+        Thread thread = new Thread(runnable);
         for(int i = 0; i < 10; i++) {
-            queueWithLimit2.add(factory.generateRandomFakeRecord());
+            queue.add(factory.generateRandomFakeRecord());
         }
 
-        queueWithLimit2.get();
-        queueWithLimit2.get();
-        thread2.start();
+        // Act
+        queue.get();
+        queue.get();
+
+        // Assert
+        thread.start();
 
         try {
-            thread2.join(10);
+            thread.join(10);
         } catch (InterruptedException e) {
             fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
         }
 
-        thread2.interrupt();
+        thread.interrupt();
+
     }
 
     @Test
