@@ -116,7 +116,7 @@ public final class UniqueEventsQueue {
                 queue.remove(recordToReturn);
 
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+                return null;
             }
 
             return recordToReturn;
