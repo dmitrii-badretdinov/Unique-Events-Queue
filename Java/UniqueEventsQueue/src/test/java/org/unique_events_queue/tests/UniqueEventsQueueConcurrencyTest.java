@@ -145,7 +145,7 @@ public class UniqueEventsQueueConcurrencyTest {
         }
 
         mockQueue.get();
-        assertThat(QueueTestUtilities.checkThatQueueIsEmpty(mockQueue)).isEqualTo(true);
+        assertThat(QueueTestUtilities.queueIsEmpty(mockQueue)).isEqualTo(true);
     }
 
     @Test
@@ -194,6 +194,6 @@ public class UniqueEventsQueueConcurrencyTest {
 
         mockQueue.addAll(recordList);
         QueueTestUtilities.drainRecords(mockQueue, numberOfRecords);
-        assertThat(QueueTestUtilities.checkThatQueueIsEmpty(mockQueue)).isEqualTo(true);
+        assertThat(QueueTestUtilities.queueIsEmpty(mockQueue)).isEqualTo(true);
     }
 }

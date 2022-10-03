@@ -29,7 +29,7 @@ public class QueueTestUtilities {
         }
     }
 
-    static boolean checkThatQueueIsEmpty(UniqueEventsQueue queue) {
+    static boolean queueIsEmpty(UniqueEventsQueue queue) {
         Callable<Record> callable = queue::get;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<Record> future = executor.submit(callable);
