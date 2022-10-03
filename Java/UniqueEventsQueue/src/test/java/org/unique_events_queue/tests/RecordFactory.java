@@ -4,8 +4,7 @@ import org.unique_events_queue.Record;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 final class RecordFactory {
     private final Random random;
@@ -20,8 +19,11 @@ final class RecordFactory {
         String id = generateRandomString(settings.getLeftCharLimit(), settings.getRightCharLimit(),
             settings.getStringMaxLength());
         float amount = generateRandomFloat(settings.getFloatMin(), settings.getFloatMax());
-        Instant dateLowerBound = Instant.now().minus(Duration.ofDays(1000));
-        Instant dateUpperBound = Instant.now();
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
+        /* The dates are arbitrary */
+        calendar.set(2022, 0, 1, 1, 1, 1);
+        Date dateLowerBound = new Date(0);
+        Date dateUpperBound = calendar.getTime();
         Date date = generateRandomDate(dateLowerBound, dateUpperBound);
 
         return new Record(id, amount, date);
@@ -39,9 +41,9 @@ final class RecordFactory {
     }
 
 
-    private Date generateRandomDate(Instant minimumInclusive, Instant maximumInclusive) {
-        long startSeconds = minimumInclusive.getEpochSecond();
-        long endSeconds = maximumInclusive.getEpochSecond();
+    private Date generateRandomDate(Date minimumInclusive, Date maximumInclusive) {
+        long startSeconds = minimumInclusive.getTime();
+        long endSeconds = maximumInclusive.getTime();
         long resultLong = (long) (startSeconds + this.random.nextFloat() * (endSeconds - startSeconds));
 
         return new Date(resultLong);
