@@ -17,29 +17,29 @@ final class RecordFactory {
     }
 
     public Record generateRandomFakeRecord(){
-        String id = generateRandomTestString(settings.getLeftCharLimit(), settings.getRightCharLimit(),
+        String id = generateRandomString(settings.getLeftCharLimit(), settings.getRightCharLimit(),
             settings.getStringMaxLength());
-        float amount = generateRandomTestFloat(settings.getFloatMin(), settings.getFloatMax());
+        float amount = generateRandomFloat(settings.getFloatMin(), settings.getFloatMax());
         Instant dateLowerBound = Instant.now().minus(Duration.ofDays(1000));
         Instant dateUpperBound = Instant.now();
-        Date date = generateRandomTestDate(dateLowerBound, dateUpperBound);
+        Date date = generateRandomDate(dateLowerBound, dateUpperBound);
 
         return new Record(id, amount, date);
     }
 
-    private String generateRandomTestString(int leftCharLimit, int rightCharLimit, int maxLength) {
+    private String generateRandomString(int leftCharLimit, int rightCharLimit, int maxLength) {
         return random.ints(leftCharLimit, rightCharLimit + 1)
                 .limit(random.nextInt(maxLength))
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
                 .toString();
     }
 
-    private float generateRandomTestFloat(float amountMinimum, float amountMaximum) {
+    private float generateRandomFloat(float amountMinimum, float amountMaximum) {
         return amountMinimum + this.random.nextFloat() * (amountMaximum - amountMinimum);
     }
 
 
-    private Date generateRandomTestDate(Instant minimumInclusive, Instant maximumInclusive) {
+    private Date generateRandomDate(Instant minimumInclusive, Instant maximumInclusive) {
         long startSeconds = minimumInclusive.getEpochSecond();
         long endSeconds = maximumInclusive.getEpochSecond();
         long resultLong = (long) (startSeconds + this.random.nextFloat() * (endSeconds - startSeconds));
