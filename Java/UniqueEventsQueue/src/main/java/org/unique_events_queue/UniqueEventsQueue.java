@@ -15,7 +15,7 @@ public final class UniqueEventsQueue {
     private final Object lockForAddGet = new Object();
     private final long queueLimit;
     private long elementsInsertedAfterLastTrim;
-    private final long trimAfterHowManyInsertedElements;
+    private final long trimAfterThatManyInsertedElements;
     private final ThreadInfoProvider threadInfoProvider;
 
     /**
@@ -33,19 +33,19 @@ public final class UniqueEventsQueue {
      * Creates an instance with a specified queue limit.
      *
      * @param queueLimitParameter a queue limit.
-     * @param trimAfterHowManyInsertedElements every that many items, it is checked if the queue size exceeds
+     * @param trimAfterThatManyInsertedElements every that many items, it is checked if the queue size exceeds
      * queueLimitParameter. In other words, the queue size may exceed the limit by that many elements at most.
      * @param provider gives information about how many waiting get() threads there may be.
      * @throws IllegalArgumentException if queue limit is less than 1
      */
     public UniqueEventsQueue(long queueLimitParameter,
-         long trimAfterHowManyInsertedElements, ThreadInfoProvider provider) throws IllegalArgumentException {
+         long trimAfterThatManyInsertedElements, ThreadInfoProvider provider) throws IllegalArgumentException {
         if(queueLimitParameter < 1)
         {
             throw new IllegalArgumentException("Queue size cannot be 0 or negative.");
         }
         queueLimit = queueLimitParameter;
-        this.trimAfterHowManyInsertedElements = trimAfterHowManyInsertedElements;
+        this.trimAfterThatManyInsertedElements = trimAfterThatManyInsertedElements;
         this.threadInfoProvider = provider;
     }
 
@@ -59,7 +59,7 @@ public final class UniqueEventsQueue {
             if (record != null && queue.add(record)) {
                 lockForAddGet.notify();
                 elementsInsertedAfterLastTrim++;
-                if(elementsInsertedAfterLastTrim >= trimAfterHowManyInsertedElements) {
+                if(elementsInsertedAfterLastTrim >= trimAfterThatManyInsertedElements) {
                     trimQueueToGivenLimit(0);
                 }
             }
@@ -82,7 +82,7 @@ public final class UniqueEventsQueue {
                  * The current trimming strategy is to preemptively trim the queue
                  * as if all elements will be inserted into it.
                  */
-                if(elementsInsertedAfterLastTrim + recordList.size() >= trimAfterHowManyInsertedElements) {
+                if(elementsInsertedAfterLastTrim + recordList.size() >= trimAfterThatManyInsertedElements) {
                     trimQueueToGivenLimit(recordList.size());
                 }
 
@@ -93,7 +93,7 @@ public final class UniqueEventsQueue {
                     }
                 }
                 elementsInsertedAfterLastTrim += numberOfItemsInserted;
-                
+
                 long howManyTreadsToNotify =
                     numberOfItemsInserted > threadInfoProvider.retrieveTheNumberOfGetThreads() ?
                     threadInfoProvider.retrieveTheNumberOfGetThreads() : numberOfItemsInserted;
