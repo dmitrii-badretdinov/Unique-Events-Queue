@@ -12,6 +12,10 @@ import java.util.concurrent.*;
 
 import static org.assertj.core.api.Assertions.*;
 
+/**
+ * Tests various concurrent-related cases of the UniqueEventsQueue class.
+ */
+
 public class UniqueEventsQueueConcurrencyTest {
     /*
      * The same executor is not used for all tests because the tests usually put tasks that
@@ -207,4 +211,5 @@ public class UniqueEventsQueueConcurrencyTest {
         QueueTestUtilities.drainRecords(mockQueue, numberOfRecords);
         assertThat(QueueTestUtilities.queueIsEmpty(mockQueue)).isEqualTo(true);
     }
+
 }

@@ -18,18 +18,24 @@ public class RecordUnitTest {
 
     @Test
     void testThatRecordInstantiatesWithAnotherRecord() {
-        String randomID = "K4s1o3a723";
-        float randomValue = (float) 1.1923;
-        Date randomDate = new Date(1278346);
-        Record record = new Record(randomID, randomValue, randomDate);
+        /* The values were chosen randomly and hold to hidden meaning. */
+        String mockId = "K4s1o3a723";
+        float mockValue = (float) 1.1923;
+        Date mockDate = new Date(1278346);
+        Record record = new Record(mockId, mockValue, mockDate);
 
         Record mockRecord = new Record(record);
 
-        assertThat(mockRecord.getId()).isEqualTo(randomID);
-        assertThat(mockRecord.getValue()).isEqualTo(randomValue);
-        assertThat(mockRecord.getId()).isEqualTo(randomID);
+        assertThat(mockRecord.getId()).isEqualTo(mockId);
+        assertThat(mockRecord.getValue()).isEqualTo(mockValue);
+        assertThat(mockRecord.getId()).isEqualTo(mockId);
     }
 
+    /**
+     * Tests the Record class against the attack on its Date field.
+     * The attacker can retrieve date and try to change its value because Date is mutable.
+     * To prevent that, a defensive copy is expected from the Record class.
+     */
     @Test
     void testThatDateIsImmutable() {
         Date mockRandomDate = new Date(128734628);

@@ -21,8 +21,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class UniqueEventsQueueUnitTest {
     /*
      * Note: the tests check if the queue is empty by creating an executor that spawns a thread.
-     * The company's Code Style Guide says the use of threads in Unit Tests is not appreciated.
-     * The executor is used because no way was found to do it without threads.
+     * The company's Code Style manual says that the use of threads in Unit Tests is not appreciated.
+     * No way was found to do it without threads, hence the executor was used.
      */
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
     static final ThreadInfoProvider oneThreadStub = new ThreadInfoProvider(1);
