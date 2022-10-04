@@ -33,6 +33,21 @@ public class UniqueEventsQueueConcurrencyTest {
     static final ThreadInfoProvider oneThreadStub = new ThreadInfoProvider(1);
 
     @Test
+    void testThatAddNotifiesWaitingThread() {
+        // Arrange
+        UniqueEventsQueue queue =  new UniqueEventsQueue();
+        Callable<Record> callable = queue::get;
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<Record> future = executor.submit(callable);
+
+        // Act
+        queue.add(factory.generateRandomFakeRecord());
+
+        // Assert
+        assertThat(QueueTestUtilities.getFuture(future)).isInstanceOf(Record.class);
+    }
+
+    @Test
     void testThatAddAllNotifiesAllWaitingThreads() {
         // Arrange
         int numberOfThreads = 50;
@@ -101,5 +116,4 @@ public class UniqueEventsQueueConcurrencyTest {
         // Finalize: shutdown executor
         executor.shutdownNow();
     }
-
 }
