@@ -10,24 +10,37 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.*;
 
 public class UniqueEventsQueueConcurrencyTest {
+    /*
+     * The same executor is not used for all tests because the tests usually put tasks that
+     * are expected to not terminate by themselves and should be cancelled manually.
+     * The alternative is that each test creates their own executor.
+     * The pros and cons of these approaches are as follows:
+     * The Same Executor approach removes the need to initiate an executor for every test, but
+     * if we forget to cancel the unending task from it even once, all other tests can give false results.
+     * The alternative approach needs to specify an executor for every test, but even if we forget to cancel
+     * the unending task, it only creates a memory leak for the duration of the test, but does not affect the results
+     * of other tests.
+     * The alternative approach makes the tests more reliable, therefore it was chosen.
+     */
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
     static final ThreadInfoProvider oneThreadStub = new ThreadInfoProvider(1);
 
     @Test
     void testThatAddAllNotifiesAllWaitingThreads() {
         // Arrange
-        UniqueEventsQueue queue = new UniqueEventsQueue(new ThreadInfoProvider(50));
+        int numberOfThreads = 50;
+        UniqueEventsQueue queue = new UniqueEventsQueue(new ThreadInfoProvider(numberOfThreads));
         Runnable runnableTask = queue::get;
+
         ThreadPoolExecutor mockThreadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
         mockThreadPoolExecutor.setCorePoolSize(0);
-        mockThreadPoolExecutor.setMaximumPoolSize(50);
+        mockThreadPoolExecutor.setMaximumPoolSize(numberOfThreads);
 
         List<Record> recordList = new LinkedList<>();
-        for(int i = 0; i < 50; i++) {
+        for(int i = 0; i < numberOfThreads; i++) {
             mockThreadPoolExecutor.submit(runnableTask);
             recordList.add(factory.generateRandomFakeRecord());
         }
@@ -44,55 +57,45 @@ public class UniqueEventsQueueConcurrencyTest {
         } catch (InterruptedException e) {
             fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
         }
+
+        // Finalize: shutdown executor
+        mockThreadPoolExecutor.shutdownNow();
     }
 
     @Test
     void testThatGetThrowsNoExceptionIfQueueBecomesEmpty() {
-        UniqueEventsQueue uniqueEventsQueue = new UniqueEventsQueue();
-        Callable<Record> callable = uniqueEventsQueue::get;
-        Runnable runnable = uniqueEventsQueue::get;
-        ExecutorService executorThread1 = Executors.newSingleThreadExecutor();
-        Thread thread2 = new Thread(runnable);
-        Record mockResult = null;
-        Record mockRecord = factory.generateRandomFakeRecord();
+        // Arrange
+        UniqueEventsQueue queue = new UniqueEventsQueue();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<Record> callable = queue::get;
+        queue.add(factory.generateRandomFakeRecord());
 
-        uniqueEventsQueue.add(mockRecord);
-        
-        Future<Record> future = executorThread1.submit(callable);
+        // Act
+        queue.get();
+        Future<Record> mockFuture = executor.submit(callable);
 
-        try {
-            mockResult = future.get(5, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException e) {
-            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
-        } catch (TimeoutException e) {
-            fail(QueueErrorMessages.THREAD_TIMEOUT.getMessage());
-        }
+        // Assert
+        assertThatThrownBy(() -> mockFuture.get(5, TimeUnit.MILLISECONDS)).isInstanceOf(TimeoutException.class);
 
-        thread2.start();
-
-        try {
-            thread2.join(10);
-        } catch (InterruptedException e) {
-            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
-        }
-
-        assertThat(mockResult).isEqualTo(mockRecord);
-        thread2.interrupt();
+        // Finalize: clean executor
+        executor.shutdownNow();
     }
 
     @Test
     void testThatGetThrowsNoExceptionIfQueueIsAlwaysEmpty() {
+        // Arrange
         UniqueEventsQueue queue = new UniqueEventsQueue();
-        Runnable runnable = queue::get;
-        Thread mockThread = new Thread(runnable);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<Record> callable = queue::get;
 
-        mockThread.start();
-        try {
-            mockThread.join(10);
-        } catch (InterruptedException e) {
-            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
-        }
-        mockThread.interrupt();
+        // Act
+        Future<Record> mockFuture = executor.submit(callable);
+
+        // Assert
+        assertThatThrownBy(() -> mockFuture.get(5, TimeUnit.MILLISECONDS)).isInstanceOf(TimeoutException.class);
+
+        // Finalize: shutdown executor
+        executor.shutdownNow();
     }
 
     @Test
@@ -100,31 +103,29 @@ public class UniqueEventsQueueConcurrencyTest {
         // Arrange
         UniqueEventsQueue queue = new UniqueEventsQueue(1, 1,
             oneThreadStub);
-        Runnable runnable = queue::get;
-        Thread thread = new Thread(runnable);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<Record> callable = queue::get;
         for(int i = 0; i < 10; i++) {
             queue.add(factory.generateRandomFakeRecord());
         }
 
         // Act
         queue.get();
+        Future<Record> mockFuture = executor.submit(callable);
 
         // Assert
-        thread.start();
-        try {
-            thread.join(10);
-        } catch (InterruptedException e) {
-            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
-        }
-        thread.interrupt();
+        assertThatThrownBy(() -> mockFuture.get(5, TimeUnit.MILLISECONDS)).isInstanceOf(TimeoutException.class);
+
+        // Finalize: shutdown executor
+        executor.shutdownNow();
     }
 
     @Test void testThatQueueTrimsIfQueueLimit2AndTrimInterval1() {
         // Arrange
         UniqueEventsQueue queue = new UniqueEventsQueue(2, 1,
             oneThreadStub);
-        Runnable runnable = queue::get;
-        Thread thread = new Thread(runnable);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<Record> callable = queue::get;
         for(int i = 0; i < 10; i++) {
             queue.add(factory.generateRandomFakeRecord());
         }
@@ -132,31 +133,29 @@ public class UniqueEventsQueueConcurrencyTest {
         // Act
         queue.get();
         queue.get();
+        Future<Record> mockFuture = executor.submit(callable);
 
         // Assert
-        thread.start();
+        assertThatThrownBy(() -> mockFuture.get(5, TimeUnit.MILLISECONDS)).isInstanceOf(TimeoutException.class);
 
-        try {
-            thread.join(10);
-        } catch (InterruptedException e) {
-            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
-        }
-
-        thread.interrupt();
-
+        // Finalize: shutdown executor
+        executor.shutdownNow();
     }
 
     @Test
     void testThatQueueTrimsForAdd() {
+        // Arrange
         long numberOfRecords = 50;
         UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords,
                 oneThreadStub);
-
         for(int i = 0; i < numberOfRecords; i++) {
             mockQueue.add(factory.generateRandomFakeRecord());
         }
 
+        // Act
         mockQueue.get();
+
+        // Assert
         assertThat(QueueTestUtilities.queueIsEmpty(mockQueue)).isEqualTo(true);
     }
 

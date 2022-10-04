@@ -10,6 +10,19 @@ import java.util.concurrent.*;
 import static org.assertj.core.api.Assertions.fail;
 
 public class QueueTestUtilities {
+    static <T> T getFuture(Future<T> future) {
+        T result = null;
+        try {
+            result = future.get(50, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException e) {
+            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
+        } catch (TimeoutException e) {
+            fail(QueueErrorMessages.THREAD_TIMEOUT.getMessage());
+        }
+
+        return result;
+    }
+
     static void drainRecords(UniqueEventsQueue queue, long numberOfRecords) {
         Runnable runnable = queue::get;
         ExecutorService executor = Executors.newCachedThreadPool();
@@ -19,13 +32,7 @@ public class QueueTestUtilities {
             futureList.add(executor.submit(runnable));
         }
         for(Future<?> future : futureList) {
-            try {
-                future.get(1, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException | ExecutionException e) {
-                fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
-            } catch (TimeoutException e) {
-                fail(QueueErrorMessages.THREAD_TIMEOUT.getMessage());
-            }
+            getFuture(future);
         }
     }
 
