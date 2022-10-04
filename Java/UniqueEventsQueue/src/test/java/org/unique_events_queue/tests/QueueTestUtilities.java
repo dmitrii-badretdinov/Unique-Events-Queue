@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 import static org.assertj.core.api.Assertions.fail;
 
 public class QueueTestUtilities {
-    static <T> T getFuture(Future<T> future) {
+    static <T> T getFutureAndHandleExceptions(Future<T> future) {
         T result = null;
         try {
             result = future.get(50, TimeUnit.MILLISECONDS);
@@ -32,7 +32,7 @@ public class QueueTestUtilities {
             futureList.add(executor.submit(runnable));
         }
         for(Future<?> future : futureList) {
-            getFuture(future);
+            getFutureAndHandleExceptions(future);
         }
     }
 

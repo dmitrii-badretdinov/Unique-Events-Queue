@@ -5,7 +5,6 @@ import org.unique_events_queue.Record;
 import org.unique_events_queue.ThreadInfoProvider;
 import org.unique_events_queue.UniqueEventsQueue;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -44,7 +43,7 @@ public class UniqueEventsQueueConcurrencyTest {
         queue.add(factory.generateRandomFakeRecord());
 
         // Assert
-        assertThat(QueueTestUtilities.getFuture(future)).isInstanceOf(Record.class);
+        assertThat(QueueTestUtilities.getFutureAndHandleExceptions(future)).isInstanceOf(Record.class);
     }
 
     @Test
