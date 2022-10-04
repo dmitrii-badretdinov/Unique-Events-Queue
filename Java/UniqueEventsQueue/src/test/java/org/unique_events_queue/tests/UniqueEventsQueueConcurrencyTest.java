@@ -27,6 +27,9 @@ public class UniqueEventsQueueConcurrencyTest {
      * the unending task, it only creates a memory leak for the duration of the test, but does not affect the results
      * of other tests.
      * The alternative approach makes the tests more reliable, therefore it was chosen.
+     *
+     * We don't use just threads instead of Executors because
+     * without Executors we won't have the much-needed functionality of Future.
      */
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
 
