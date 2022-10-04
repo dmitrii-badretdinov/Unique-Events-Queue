@@ -29,7 +29,6 @@ public class UniqueEventsQueueConcurrencyTest {
      * The alternative approach makes the tests more reliable, therefore it was chosen.
      */
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
-    static final ThreadInfoProvider oneThreadStub = new ThreadInfoProvider(1);
 
     @Test
     void testThatAddNotifiesWaitingThread() {
