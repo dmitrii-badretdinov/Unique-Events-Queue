@@ -39,7 +39,7 @@ public final class UniqueEventsQueue {
      * @throws IllegalArgumentException if queue limit is less than 1
      */
     public UniqueEventsQueue(long queueLimitParameter,
-         long trimAfterThatManyInsertedElements, ThreadInfoProvider provider) throws IllegalArgumentException {
+        long trimAfterThatManyInsertedElements, ThreadInfoProvider provider) throws IllegalArgumentException {
         if(queueLimitParameter < 1)
         {
             throw new IllegalArgumentException("Queue size cannot be 0 or negative.");
