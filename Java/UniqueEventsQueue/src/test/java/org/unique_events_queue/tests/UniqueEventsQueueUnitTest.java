@@ -10,6 +10,7 @@ import org.unique_events_queue.UniqueEventsQueue;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -116,4 +117,115 @@ class UniqueEventsQueueUnitTest {
         assertThatThrownBy(() -> new UniqueEventsQueue(0, 1, oneThreadStub))
             .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void testThatQueueTrimsIfQueueLimit1AndTrimInterval1() {
+        // Arrange
+        UniqueEventsQueue queue = new UniqueEventsQueue(1, 1,
+            oneThreadStub);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<Record> callable = queue::get;
+        for(int i = 0; i < 10; i++) {
+            queue.add(factory.generateRandomFakeRecord());
+        }
+
+        // Act
+        queue.get();
+        Future<Record> mockFuture = executor.submit(callable);
+
+        // Assert
+        assertThatThrownBy(() -> mockFuture.get(5, TimeUnit.MILLISECONDS)).isInstanceOf(TimeoutException.class);
+
+        // Finalize: shutdown executor
+        executor.shutdownNow();
+    }
+
+    @Test void testThatQueueTrimsIfQueueLimit2AndTrimInterval1() {
+        // Arrange
+        UniqueEventsQueue queue = new UniqueEventsQueue(2, 1,
+            oneThreadStub);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<Record> callable = queue::get;
+        for(int i = 0; i < 10; i++) {
+            queue.add(factory.generateRandomFakeRecord());
+        }
+
+        // Act
+        queue.get();
+        queue.get();
+        Future<Record> mockFuture = executor.submit(callable);
+
+        // Assert
+        assertThatThrownBy(() -> mockFuture.get(5, TimeUnit.MILLISECONDS)).isInstanceOf(TimeoutException.class);
+
+        // Finalize: shutdown executor
+        executor.shutdownNow();
+    }
+
+    @Test
+    void testThatQueueTrimsForAdd() {
+        // Arrange
+        long numberOfRecords = 50;
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords,
+            oneThreadStub);
+        for(int i = 0; i < numberOfRecords; i++) {
+            mockQueue.add(factory.generateRandomFakeRecord());
+        }
+
+        // Act
+        mockQueue.get();
+
+        // Assert
+        assertThat(QueueTestUtilities.queueIsEmpty(mockQueue)).isEqualTo(true);
+    }
+
+    @Test
+    void testThatQueueTrimsForAddAll() {
+        long numberOfRecords = 50;
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords, oneThreadStub);
+        List<Record> firstRecordList = new LinkedList<>();
+        List<Record> secondRecordList = new LinkedList<>();
+
+        for(int i = 0; i < numberOfRecords; i++) {
+            firstRecordList.add(factory.generateRandomFakeRecord());
+            secondRecordList.add(factory.generateRandomFakeRecord());
+        }
+
+        mockQueue.addAll(firstRecordList);
+        mockQueue.addAll(secondRecordList);
+        Iterator<Record> mockIterator = secondRecordList.iterator();
+        for(int i = 0; i < secondRecordList.size(); i++) {
+            assertThat(mockQueue.get()).isEqualTo(mockIterator.next());
+        }
+    }
+
+    @Test
+    void testThatQueueDoesNotTrimWhenTrimIntervalIsNotReachedForAdd() {
+        long numberOfRecords = 50;
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1,
+            numberOfRecords + 1, oneThreadStub);
+
+        for(int i = 0; i < numberOfRecords; i++) {
+            mockQueue.add(factory.generateRandomFakeRecord());
+        }
+
+        QueueTestUtilities.drainRecords(mockQueue, numberOfRecords);
+    }
+
+    @Test
+    void testThatQueueDoesNotTrimWhenTrimIntervalIsNotReachedForAddAll() {
+        long numberOfRecords = 50;
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1,
+            numberOfRecords + 1, oneThreadStub);
+        List<Record> recordList = new LinkedList<>();
+
+        for(int i = 0; i < numberOfRecords; i++) {
+            recordList.add(factory.generateRandomFakeRecord());
+        }
+
+        mockQueue.addAll(recordList);
+        QueueTestUtilities.drainRecords(mockQueue, numberOfRecords);
+        assertThat(QueueTestUtilities.queueIsEmpty(mockQueue)).isEqualTo(true);
+    }
+
 }
