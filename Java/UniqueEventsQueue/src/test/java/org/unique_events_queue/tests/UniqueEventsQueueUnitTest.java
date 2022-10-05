@@ -28,7 +28,7 @@ class UniqueEventsQueueUnitTest {
     static final ThreadInfoProvider oneThreadStub = new ThreadInfoProvider(1);
 
     @Test
-    void testThatFunctionQueueIsEmptyIsFunctional() {
+    void testThatQueueIsEmpty() {
         UniqueEventsQueue queue = new UniqueEventsQueue();
         queue.add(factory.generateRandomFakeRecord());
 
