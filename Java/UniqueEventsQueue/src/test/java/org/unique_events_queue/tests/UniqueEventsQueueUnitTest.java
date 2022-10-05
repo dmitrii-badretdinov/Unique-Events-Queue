@@ -27,14 +27,7 @@ class UniqueEventsQueueUnitTest {
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
     static final ThreadInfoProvider oneThreadStub = new ThreadInfoProvider(1);
 
-    @Test
-    void testThatQueueIsEmpty() {
-        UniqueEventsQueue queue = new UniqueEventsQueue();
-        queue.add(factory.generateRandomFakeRecord());
-
-        assertThat(QueueTestUtilities.queueIsEmpty(queue)).isEqualTo(false);
-    }
-
+    // region add()
     @Test
     void testThatAddHandlesValidRecord() {
         UniqueEventsQueue mockQueue = new UniqueEventsQueue();
@@ -68,15 +61,9 @@ class UniqueEventsQueueUnitTest {
             assertThat(mockQueue.get()).isEqualTo(mockOutputIterator.next());
         }
     }
+    // endregion
 
-    @Test
-    void testThatGetReturnsRecord() {
-        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
-        Record mockRecord = factory.generateRandomFakeRecord();
-        mockQueue.add(mockRecord);
-        assertThat(mockQueue.get()).isEqualTo(mockRecord);
-    }
-
+    // region addAll()
     @Test
     void testThatAddAllInsertsRecordsIntoQueue() {
         UniqueEventsQueue mockQueue = new UniqueEventsQueue();
@@ -116,15 +103,9 @@ class UniqueEventsQueueUnitTest {
 
         mockQueue.addAll(list);
     }
+    // endregion
 
-    @Test
-    void testThatQueueAcceptsOnlyProperSizeLimit() {
-        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1, oneThreadStub))
-            .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1, oneThreadStub))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
+    // region Trimming
     @Test
     void testThatQueueTrimsIfQueueLimit1AndTrimInterval1() {
         // Arrange
@@ -234,5 +215,31 @@ class UniqueEventsQueueUnitTest {
         QueueTestUtilities.drainRecords(mockQueue, numberOfRecords);
         assertThat(QueueTestUtilities.queueIsEmpty(mockQueue)).isEqualTo(true);
     }
+    // endregion
 
+    // region Other tests
+    @Test
+    void testThatQueueIsEmpty() {
+        UniqueEventsQueue queue = new UniqueEventsQueue();
+        queue.add(factory.generateRandomFakeRecord());
+
+        assertThat(QueueTestUtilities.queueIsEmpty(queue)).isEqualTo(false);
+    }
+
+    @Test
+    void testThatGetReturnsRecord() {
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
+        Record mockRecord = factory.generateRandomFakeRecord();
+        mockQueue.add(mockRecord);
+        assertThat(mockQueue.get()).isEqualTo(mockRecord);
+    }
+
+    @Test
+    void testThatQueueAcceptsOnlyProperSizeLimit() {
+        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1, oneThreadStub))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1, oneThreadStub))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+    // endregion
 }

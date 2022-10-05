@@ -11,6 +11,22 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RecordUnitTest {
+    /**
+     * Tests the Record class against the attack on its Date field.
+     * The attacker can retrieve date and try to change its value because Date is mutable.
+     * To prevent that, a defensive copy is expected from the Record class.
+     */
+    @Test
+    void testThatDateIsImmutable() {
+        Date mockRandomDate = new Date(128734628);
+        Record record = new Record("test", 0, mockRandomDate);
+        Date dateToChangeMaliciously = record.getDate();
+        dateToChangeMaliciously.setTime(0);
+        Date mockDate = record.getDate();
+        assertThat(mockDate).isEqualTo(mockRandomDate);
+    }
+
+    // region Initialization tests
     @Test
     void testThatRecordInstantiatesWithNullInputs() {
         new Record(null, 0, null);
@@ -30,22 +46,9 @@ public class RecordUnitTest {
         assertThat(mockRecord.getValue()).isEqualTo(mockValue);
         assertThat(mockRecord.getId()).isEqualTo(mockId);
     }
+    // endregion
 
-    /**
-     * Tests the Record class against the attack on its Date field.
-     * The attacker can retrieve date and try to change its value because Date is mutable.
-     * To prevent that, a defensive copy is expected from the Record class.
-     */
-    @Test
-    void testThatDateIsImmutable() {
-        Date mockRandomDate = new Date(128734628);
-        Record record = new Record("test", 0, mockRandomDate);
-        Date dateToChangeMaliciously = record.getDate();
-        dateToChangeMaliciously.setTime(0);
-        Date mockDate = record.getDate();
-        assertThat(mockDate).isEqualTo(mockRandomDate);
-    }
-
+    // region Fields equality and hashCode
     @Test
     void testThatIdenticalRecordIsDetected() {
         Record mockOriginal = new Record("0", 0, new Date(0));
@@ -81,4 +84,5 @@ public class RecordUnitTest {
         assertThat(mockOriginal).isNotEqualTo(mockDifferentDate);
         assertThat(mockOriginal.hashCode()).isNotEqualTo(mockDifferentDate.hashCode());
     }
+    // endregion
 }
