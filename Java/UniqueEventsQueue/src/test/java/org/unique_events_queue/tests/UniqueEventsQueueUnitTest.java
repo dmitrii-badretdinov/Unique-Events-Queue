@@ -12,8 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 
 /**
@@ -27,6 +26,14 @@ class UniqueEventsQueueUnitTest {
      */
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
     static final ThreadInfoProvider oneThreadStub = new ThreadInfoProvider(1);
+
+    @Test
+    void testThatFunctionQueueIsEmptyIsFunctional() {
+        UniqueEventsQueue queue = new UniqueEventsQueue();
+        queue.add(factory.generateRandomFakeRecord());
+
+        assertThat(QueueTestUtilities.queueIsEmpty(queue)).isEqualTo(false);
+    }
 
     @Test
     void testThatAddHandlesValidRecord() {
