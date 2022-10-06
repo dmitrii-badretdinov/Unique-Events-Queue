@@ -1,7 +1,4 @@
-package org.unique_events_queue.tests;
-
-import org.unique_events_queue.Record;
-import org.unique_events_queue.UniqueEventsQueue;
+package org.unique_events_queue;
 
 import java.util.LinkedList;
 import java.util.List;

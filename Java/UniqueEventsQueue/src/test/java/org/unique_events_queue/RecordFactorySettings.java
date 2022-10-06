@@ -1,4 +1,4 @@
-package org.unique_events_queue.tests;
+package org.unique_events_queue;
 
 class RecordFactorySettings implements IRecordFactorySettings {
     private static final long SEED = 182376523;

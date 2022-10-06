@@ -1,4 +1,4 @@
-package org.unique_events_queue.tests;
+package org.unique_events_queue;
 
 enum QueueErrorMessages {
     INTERRUPTED_FROM_OUTSIDE("Interrupted from the outside."),

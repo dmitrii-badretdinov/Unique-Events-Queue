@@ -1,9 +1,5 @@
-package org.unique_events_queue.tests;
+package org.unique_events_queue;
 
-import org.unique_events_queue.Record;
-
-import java.time.Duration;
-import java.time.Instant;
 import java.util.*;
 
 final class RecordFactory {
