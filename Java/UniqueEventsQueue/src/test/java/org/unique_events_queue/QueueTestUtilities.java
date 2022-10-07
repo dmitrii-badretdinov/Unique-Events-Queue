@@ -32,22 +32,4 @@ public class QueueTestUtilities {
             getFutureAndHandleExceptions(future);
         }
     }
-
-    static boolean queueIsEmpty(UniqueEventsQueue queue) {
-        Callable<Record> callable = queue::get;
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<Record> future = executor.submit(callable);
-        boolean queueIsEmpty = false;
-
-        try {
-            future.get(1, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException e) {
-            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
-        } catch (TimeoutException e) {
-            queueIsEmpty = true;
-            executor.shutdownNow();
-        }
-
-        return queueIsEmpty;
-    }
 }

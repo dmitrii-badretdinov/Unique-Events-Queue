@@ -130,6 +130,17 @@ public final class UniqueEventsQueue {
     }
 
     /**
+     * Indicates if queue contains anything.
+     *
+     * @return true if the queue is empty. False otherwise.
+     */
+    boolean isEmpty() {
+        synchronized (lockForAddGet) {
+            return queue.isEmpty();
+        }
+    }
+
+    /**
      * Trims the queue to the specified limit.
      *
      * @param howManyTheoreticallyAdded adds that many items to the current queue size. Works as a proactive trim before

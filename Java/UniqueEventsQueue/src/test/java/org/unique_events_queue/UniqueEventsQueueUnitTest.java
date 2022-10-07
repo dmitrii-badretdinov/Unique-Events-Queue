@@ -7,7 +7,6 @@ import org.testng.collections.Lists;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.*;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -16,11 +15,6 @@ import static org.assertj.core.api.Assertions.*;
  * Tests the basic non-concurrent functionality of the queue class.
  */
 class UniqueEventsQueueUnitTest {
-    /*
-     * Note: the tests check if the queue is empty by creating an executor that spawns a thread.
-     * The company's Code Style manual says that the use of threads in Unit Tests is not appreciated.
-     * No way was found to do it without threads, hence the executor was used.
-     */
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
     static final ThreadInfoProvider oneThreadStub = new ThreadInfoProvider(1);
 
@@ -30,12 +24,16 @@ class UniqueEventsQueueUnitTest {
         UniqueEventsQueue mockQueue = new UniqueEventsQueue();
         Record record = factory.generateRandomFakeRecord();
         mockQueue.add(record);
+
+        assertThat(mockQueue.isEmpty()).isEqualTo(false);
     }
 
     @Test
     void testThatAddHandlesNullInput() {
         UniqueEventsQueue mockQueue = new UniqueEventsQueue();
         mockQueue.add(null);
+
+        assertThat(mockQueue.isEmpty()).isEqualTo(true);
     }
 
     @Test
@@ -81,6 +79,8 @@ class UniqueEventsQueueUnitTest {
     void testThatAddAllHandlesNullInput() {
         UniqueEventsQueue mockQueue = new UniqueEventsQueue();
         mockQueue.addAll(null);
+
+        assertThat(mockQueue.isEmpty()).isEqualTo(true);
     }
 
     @Test
@@ -89,6 +89,8 @@ class UniqueEventsQueueUnitTest {
         List<Record> list = Lists.newArrayList(null, null, null);
 
         mockQueue.addAll(list);
+
+        assertThat(mockQueue.isEmpty()).isEqualTo(true);
     }
 
     @Test
@@ -99,6 +101,9 @@ class UniqueEventsQueueUnitTest {
         List<Record> list = Lists.newArrayList(null, record1, null, record2, null);
 
         mockQueue.addAll(list);
+
+        assertThat(mockQueue.get()).isEqualTo(record1);
+        assertThat(mockQueue.get()).isEqualTo(record2);
     }
     // endregion
 
@@ -108,43 +113,31 @@ class UniqueEventsQueueUnitTest {
         // Arrange
         UniqueEventsQueue queue = new UniqueEventsQueue(1, 1,
             oneThreadStub);
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Callable<Record> callable = queue::get;
         for(int i = 0; i < 10; i++) {
             queue.add(factory.generateRandomFakeRecord());
         }
 
         // Act
         queue.get();
-        Future<Record> mockFuture = executor.submit(callable);
 
         // Assert
-        assertThatThrownBy(() -> mockFuture.get(5, TimeUnit.MILLISECONDS)).isInstanceOf(TimeoutException.class);
-
-        // Finalize: shutdown executor
-        executor.shutdownNow();
+        assertThat(queue.isEmpty()).isEqualTo(true);
     }
 
     @Test void testThatQueueTrimsIfQueueLimit2AndTrimInterval1() {
         // Arrange
-        UniqueEventsQueue queue = new UniqueEventsQueue(2, 1,
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(2, 1,
             oneThreadStub);
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Callable<Record> callable = queue::get;
         for(int i = 0; i < 10; i++) {
-            queue.add(factory.generateRandomFakeRecord());
+            mockQueue.add(factory.generateRandomFakeRecord());
         }
 
         // Act
-        queue.get();
-        queue.get();
-        Future<Record> mockFuture = executor.submit(callable);
+        mockQueue.get();
+        mockQueue.get();
 
         // Assert
-        assertThatThrownBy(() -> mockFuture.get(5, TimeUnit.MILLISECONDS)).isInstanceOf(TimeoutException.class);
-
-        // Finalize: shutdown executor
-        executor.shutdownNow();
+        assertThat(mockQueue.isEmpty()).isEqualTo(true);
     }
 
     @Test
@@ -161,7 +154,7 @@ class UniqueEventsQueueUnitTest {
         mockQueue.get();
 
         // Assert
-        assertThat(QueueTestUtilities.queueIsEmpty(mockQueue)).isEqualTo(true);
+        assertThat(mockQueue.isEmpty()).isEqualTo(true);
     }
 
     @Test
@@ -195,6 +188,7 @@ class UniqueEventsQueueUnitTest {
         }
 
         QueueTestUtilities.drainRecords(mockQueue, numberOfRecords);
+        assertThat(mockQueue.isEmpty()).isEqualTo(true);
     }
 
     @Test
@@ -210,17 +204,17 @@ class UniqueEventsQueueUnitTest {
 
         mockQueue.addAll(recordList);
         QueueTestUtilities.drainRecords(mockQueue, numberOfRecords);
-        assertThat(QueueTestUtilities.queueIsEmpty(mockQueue)).isEqualTo(true);
+        assertThat(mockQueue.isEmpty()).isEqualTo(true);
     }
     // endregion
 
     // region Other tests
     @Test
     void testThatQueueIsEmpty() {
-        UniqueEventsQueue queue = new UniqueEventsQueue();
-        queue.add(factory.generateRandomFakeRecord());
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
+        mockQueue.add(factory.generateRandomFakeRecord());
 
-        assertThat(QueueTestUtilities.queueIsEmpty(queue)).isEqualTo(false);
+        assertThat(mockQueue.isEmpty()).isEqualTo(false);
     }
 
     @Test
