@@ -17,9 +17,12 @@ public class UniqueEventsQueueConcurrencyTest {
      * The same executor is not used for all tests because the tests usually put tasks that
      * are expected to not terminate by themselves and should be cancelled manually.
      * The alternative is that each test creates their own executor.
+     *
      * The pros and cons of these approaches are as follows:
+     *
      * The Same Executor approach removes the need to initiate an executor for every test, but
      * if we forget to cancel the unending task from it even once, all other tests can give false results.
+     * 
      * The alternative approach needs to specify an executor for every test, but even if we forget to cancel
      * the unending task, it only creates a memory leak for the duration of the test. It does not affect the results
      * of other tests. It makes the tests more reliable, therefore it was chosen.
