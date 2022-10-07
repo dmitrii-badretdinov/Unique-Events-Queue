@@ -1,6 +1,9 @@
 package org.unique_events_queue;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
+import java.util.TimeZone;
 
 final class RecordFactory {
     private final Random random;

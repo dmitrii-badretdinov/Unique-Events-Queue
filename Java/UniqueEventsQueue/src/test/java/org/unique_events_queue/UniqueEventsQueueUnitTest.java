@@ -3,12 +3,12 @@ package org.unique_events_queue;
 import org.junit.jupiter.api.Test;
 import org.testng.collections.Lists;
 
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 /**

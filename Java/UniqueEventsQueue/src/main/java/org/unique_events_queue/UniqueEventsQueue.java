@@ -1,6 +1,8 @@
 package org.unique_events_queue;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 /**
  * A thread-safe queue of unique elements.
