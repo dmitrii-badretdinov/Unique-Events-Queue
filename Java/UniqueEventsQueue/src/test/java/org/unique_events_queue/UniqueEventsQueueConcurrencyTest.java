@@ -21,12 +21,11 @@ public class UniqueEventsQueueConcurrencyTest {
      * The Same Executor approach removes the need to initiate an executor for every test, but
      * if we forget to cancel the unending task from it even once, all other tests can give false results.
      * The alternative approach needs to specify an executor for every test, but even if we forget to cancel
-     * the unending task, it only creates a memory leak for the duration of the test, but does not affect the results
-     * of other tests.
-     * The alternative approach makes the tests more reliable, therefore it was chosen.
+     * the unending task, it only creates a memory leak for the duration of the test. It does not affect the results
+     * of other tests. It makes the tests more reliable, therefore it was chosen.
      *
-     * We don't use just threads instead of Executors because
-     * without Executors we won't have the much-needed functionality of Future.
+     * We don't use just threads instead of Executors because without Executors we won't have the much-needed
+     * functionality of Future.
      */
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
 
