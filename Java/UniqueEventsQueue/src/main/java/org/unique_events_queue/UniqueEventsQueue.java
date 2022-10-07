@@ -1,8 +1,10 @@
 package org.unique_events_queue;
 
+import java.sql.Time;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 /**
  * A thread-safe queue of unique elements.
@@ -112,12 +114,35 @@ public final class UniqueEventsQueue {
      * @return the oldest record from the queue.
      */
     public Record get() {
+        return get(Long.MAX_VALUE, false);
+    }
+
+    /**
+     * Retrieves a record from the queue.
+     *
+     * @param milliseconds wait for how many milliseconds before waking up and checking the queue state again.
+     * @param shouldItThrow a flag to allow throwing a TimeoutException if the waiting time ran out.
+     * @return a Record from the queue on the FIFO principle.
+     */
+    Record get(long milliseconds, boolean shouldItThrow) {
+        /*
+         * This function throws an unchecked RuntimeException instead of a checked TimeoutException because
+         * the said exception is expected to be used only in tests.
+         * Any public function should call this function with the shouldItThrow set to false,
+         * so it does not throw the unchecked exception.
+         */
         synchronized (lockForAddGet) {
             Record recordToReturn;
+            long timeElapsed = 0;
 
             try {
+                timeElapsed = System.nanoTime();
                 while (!queue.iterator().hasNext()) {
-                    lockForAddGet.wait();
+                    lockForAddGet.wait(milliseconds);
+
+                    if (shouldItThrow && System.nanoTime() - timeElapsed >= milliseconds * Math.pow(10, 6)) {
+                        throw new RuntimeException("Timed out. There were no elements in the queue.");
+                    }
                 }
 
                 recordToReturn = queue.iterator().next();
