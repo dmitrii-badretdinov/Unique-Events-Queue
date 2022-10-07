@@ -111,7 +111,7 @@ public final class UniqueEventsQueue {
      */
     public Record get() {
         synchronized (lockForAddGet) {
-            Record recordToReturn = null;
+            Record recordToReturn;
 
             try {
                 while (!queue.iterator().hasNext()) {
