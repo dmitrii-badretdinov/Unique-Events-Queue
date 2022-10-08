@@ -7,6 +7,10 @@ import java.util.concurrent.*;
 import static org.assertj.core.api.Assertions.fail;
 
 public class QueueTestUtilities {
+    static Record getOrThrow(UniqueEventsQueue queue) {
+        return queue.get(1000, true);
+    }
+
     static <T> T getFutureAndHandleExceptions(Future<T> future) {
         T result = null;
         try {

@@ -53,7 +53,7 @@ class UniqueEventsQueueUnitTest {
         mockQueue.add(null);
 
         for(int i = 0; i < 2; i++) {
-            assertThat(mockQueue.get()).isEqualTo(mockOutputIterator.next());
+            assertThat(QueueTestUtilities.getOrThrow(mockQueue)).isEqualTo(mockOutputIterator.next());
         }
     }
     // endregion
@@ -71,7 +71,7 @@ class UniqueEventsQueueUnitTest {
         mockQueue.addAll(recordList);
 
         for (int i = 0; i < 3; ++i) {
-            assertThat(mockQueue.get()).isEqualTo(mockIterator.next());
+            assertThat(QueueTestUtilities.getOrThrow(mockQueue)).isEqualTo(mockIterator.next());
         }
     }
 
@@ -102,8 +102,8 @@ class UniqueEventsQueueUnitTest {
 
         mockQueue.addAll(list);
 
-        assertThat(mockQueue.get()).isEqualTo(record1);
-        assertThat(mockQueue.get()).isEqualTo(record2);
+        assertThat(QueueTestUtilities.getOrThrow(mockQueue)).isEqualTo(record1);
+        assertThat(QueueTestUtilities.getOrThrow(mockQueue)).isEqualTo(record2);
     }
     // endregion
 
@@ -111,17 +111,17 @@ class UniqueEventsQueueUnitTest {
     @Test
     void testThatQueueTrimsIfQueueLimit1AndTrimInterval1() {
         // Arrange
-        UniqueEventsQueue queue = new UniqueEventsQueue(1, 1,
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, 1,
             oneThreadStub);
         for(int i = 0; i < 10; i++) {
-            queue.add(factory.generateRandomFakeRecord());
+            mockQueue.add(factory.generateRandomFakeRecord());
         }
 
         // Act
-        queue.get();
+        QueueTestUtilities.getOrThrow(mockQueue);
 
         // Assert
-        assertThat(queue.isEmpty()).isEqualTo(true);
+        assertThat(mockQueue.isEmpty()).isEqualTo(true);
     }
 
     @Test void testThatQueueTrimsIfQueueLimit2AndTrimInterval1() {
@@ -133,8 +133,8 @@ class UniqueEventsQueueUnitTest {
         }
 
         // Act
-        mockQueue.get();
-        mockQueue.get();
+        QueueTestUtilities.getOrThrow(mockQueue);
+        QueueTestUtilities.getOrThrow(mockQueue);
 
         // Assert
         assertThat(mockQueue.isEmpty()).isEqualTo(true);
@@ -151,7 +151,7 @@ class UniqueEventsQueueUnitTest {
         }
 
         // Act
-        mockQueue.get();
+        QueueTestUtilities.getOrThrow(mockQueue);
 
         // Assert
         assertThat(mockQueue.isEmpty()).isEqualTo(true);
@@ -173,7 +173,7 @@ class UniqueEventsQueueUnitTest {
         mockQueue.addAll(secondRecordList);
         Iterator<Record> mockIterator = secondRecordList.iterator();
         for(int i = 0; i < secondRecordList.size(); i++) {
-            assertThat(mockQueue.get()).isEqualTo(mockIterator.next());
+            assertThat(QueueTestUtilities.getOrThrow(mockQueue)).isEqualTo(mockIterator.next());
         }
     }
 
@@ -224,7 +224,7 @@ class UniqueEventsQueueUnitTest {
         mockQueue.add(factory.generateRandomFakeRecord());
 
         // Act
-        mockQueue.get();
+        QueueTestUtilities.getOrThrow(mockQueue);
 
         // Assert
         assertThat(mockQueue.isEmpty()).isEqualTo(true);
@@ -235,7 +235,7 @@ class UniqueEventsQueueUnitTest {
         UniqueEventsQueue mockQueue = new UniqueEventsQueue();
         Record mockRecord = factory.generateRandomFakeRecord();
         mockQueue.add(mockRecord);
-        assertThat(mockQueue.get()).isEqualTo(mockRecord);
+        assertThat(QueueTestUtilities.getOrThrow(mockQueue)).isEqualTo(mockRecord);
     }
 
     @Test
