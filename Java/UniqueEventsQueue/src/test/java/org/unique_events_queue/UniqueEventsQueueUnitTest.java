@@ -245,5 +245,12 @@ class UniqueEventsQueueUnitTest {
         assertThatThrownBy(() -> new UniqueEventsQueue(0, 1, oneThreadStub))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void testsThatParametrizedGetThrowsException() {
+        UniqueEventsQueue queue = new UniqueEventsQueue();
+
+        assertThatThrownBy(() -> queue.get(1, true)).isInstanceOf(RuntimeException.class);
+    }
     // endregion
 }

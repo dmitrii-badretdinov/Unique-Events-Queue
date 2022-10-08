@@ -121,6 +121,7 @@ public final class UniqueEventsQueue {
      * Retrieves a record from the queue.
      *
      * @param milliseconds wait for how many milliseconds before waking up and checking the queue state again.
+     *                     Zero equals endless wait.
      * @param shouldItThrow a flag to allow throwing a TimeoutException if the waiting time ran out.
      * @return a Record from the queue on the FIFO principle.
      */
