@@ -16,7 +16,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  */
 class UniqueEventsQueueUnitTest {
     static final RecordFactory factory = new RecordFactory(new RecordFactorySettings());
-    static final ThreadInfoProvider oneThreadStub = new ThreadInfoProvider(1);
 
     // region add()
     @Test
@@ -111,8 +110,7 @@ class UniqueEventsQueueUnitTest {
     @Test
     void testThatQueueTrimsIfQueueLimit1AndTrimInterval1() {
         // Arrange
-        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, 1,
-            oneThreadStub);
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, 1);
         for(int i = 0; i < 10; i++) {
             mockQueue.add(factory.generateRandomFakeRecord());
         }
@@ -126,8 +124,7 @@ class UniqueEventsQueueUnitTest {
 
     @Test void testThatQueueTrimsIfQueueLimit2AndTrimInterval1() {
         // Arrange
-        UniqueEventsQueue mockQueue = new UniqueEventsQueue(2, 1,
-            oneThreadStub);
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(2, 1);
         for(int i = 0; i < 10; i++) {
             mockQueue.add(factory.generateRandomFakeRecord());
         }
@@ -144,8 +141,7 @@ class UniqueEventsQueueUnitTest {
     void testThatQueueTrimsForAdd() {
         // Arrange
         long numberOfRecords = 50;
-        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords,
-            oneThreadStub);
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords);
         for(int i = 0; i < numberOfRecords; i++) {
             mockQueue.add(factory.generateRandomFakeRecord());
         }
@@ -160,7 +156,7 @@ class UniqueEventsQueueUnitTest {
     @Test
     void testThatQueueTrimsForAddAll() {
         long numberOfRecords = 50;
-        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords, oneThreadStub);
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords);
         List<Record> firstRecordList = new LinkedList<>();
         List<Record> secondRecordList = new LinkedList<>();
 
@@ -180,8 +176,7 @@ class UniqueEventsQueueUnitTest {
     @Test
     void testThatQueueDoesNotTrimWhenTrimIntervalIsNotReachedForAdd() {
         long numberOfRecords = 50;
-        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1,
-            numberOfRecords + 1, oneThreadStub);
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords + 1);
 
         for(int i = 0; i < numberOfRecords; i++) {
             mockQueue.add(factory.generateRandomFakeRecord());
@@ -194,8 +189,7 @@ class UniqueEventsQueueUnitTest {
     @Test
     void testThatQueueDoesNotTrimWhenTrimIntervalIsNotReachedForAddAll() {
         long numberOfRecords = 50;
-        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1,
-            numberOfRecords + 1, oneThreadStub);
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords + 1);
         List<Record> recordList = new LinkedList<>();
 
         for(int i = 0; i < numberOfRecords; i++) {
@@ -240,9 +234,9 @@ class UniqueEventsQueueUnitTest {
 
     @Test
     void testThatQueueAcceptsOnlyProperSizeLimit() {
-        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1, oneThreadStub))
+        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1, oneThreadStub))
+        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

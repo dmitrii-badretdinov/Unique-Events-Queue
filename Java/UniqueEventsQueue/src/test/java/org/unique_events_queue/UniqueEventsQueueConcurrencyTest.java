@@ -51,7 +51,7 @@ public class UniqueEventsQueueConcurrencyTest {
     void testThatAddAllNotifiesAllWaitingThreads() {
         // Arrange
         int numberOfThreads = 50;
-        UniqueEventsQueue queue = new UniqueEventsQueue(new ThreadInfoProvider(numberOfThreads));
+        UniqueEventsQueue queue = new UniqueEventsQueue();
         Runnable runnableTask = queue::get;
 
         ThreadPoolExecutor mockThreadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);

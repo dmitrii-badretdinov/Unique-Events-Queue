@@ -4,6 +4,8 @@ import java.sql.Time;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -20,17 +22,13 @@ public final class UniqueEventsQueue {
     private final long queueLimit;
     private long elementsInsertedAfterLastTrim;
     private final long trimAfterThatManyInsertedElements;
-    private final ThreadInfoProvider threadInfoProvider;
+    private final ConcurrentHashMap<Object, Boolean> waitingThreadsMap = new ConcurrentHashMap<>();
 
     /**
      * Creates an instance with a default parameters.
      */
     public UniqueEventsQueue(){
-        this((long) Math.pow(10, 9), 1000, new ThreadInfoProvider(50));
-    }
-
-    public UniqueEventsQueue(ThreadInfoProvider provider) {
-        this((long) Math.pow(10, 9), 1000, provider);
+        this((long) Math.pow(10, 9), 1000);
     }
 
     /**
@@ -39,18 +37,16 @@ public final class UniqueEventsQueue {
      * @param queueLimitParameter a queue limit.
      * @param trimAfterThatManyInsertedElements every that many items, it is checked if the queue size exceeds
      * queueLimitParameter. In other words, the queue size may exceed the limit by that many elements at most.
-     * @param provider gives information about how many waiting get() threads there may be.
      * @throws IllegalArgumentException if queue limit is less than 1
      */
-    public UniqueEventsQueue(long queueLimitParameter,
-        long trimAfterThatManyInsertedElements, ThreadInfoProvider provider) throws IllegalArgumentException {
+    public UniqueEventsQueue(long queueLimitParameter, long trimAfterThatManyInsertedElements)
+        throws IllegalArgumentException {
         if(queueLimitParameter < 1)
         {
             throw new IllegalArgumentException("Queue size cannot be 0 or negative.");
         }
         queueLimit = queueLimitParameter;
         this.trimAfterThatManyInsertedElements = trimAfterThatManyInsertedElements;
-        this.threadInfoProvider = provider;
     }
 
     /**
@@ -99,8 +95,7 @@ public final class UniqueEventsQueue {
                 elementsInsertedAfterLastTrim += numberOfItemsInserted;
 
                 long howManyTreadsToNotify =
-                    numberOfItemsInserted > threadInfoProvider.retrieveTheNumberOfGetThreads() ?
-                    threadInfoProvider.retrieveTheNumberOfGetThreads() : numberOfItemsInserted;
+                    numberOfItemsInserted > waitingThreadsMap.size() ? waitingThreadsMap.size() : numberOfItemsInserted;
                 for(int i = 0; i < howManyTreadsToNotify; i++) {
                     lockForAddGet.notify();
                 }
@@ -139,6 +134,7 @@ public final class UniqueEventsQueue {
             try {
                 timeElapsed = System.nanoTime();
                 while (!queue.iterator().hasNext()) {
+                    waitingThreadsMap.putIfAbsent(this, true);
                     lockForAddGet.wait(milliseconds);
 
                     if (shouldItThrow && System.nanoTime() - timeElapsed >= milliseconds * Math.pow(10, 6)) {
@@ -148,8 +144,9 @@ public final class UniqueEventsQueue {
 
                 recordToReturn = queue.iterator().next();
                 queue.remove(recordToReturn);
-
+                waitingThreadsMap.remove(this);
             } catch (InterruptedException e) {
+                waitingThreadsMap.remove(this);
                 return null;
             }
 
