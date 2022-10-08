@@ -82,25 +82,6 @@ public class UniqueEventsQueueConcurrencyTest {
     }
 
     @Test
-    void testThatGetThrowsNoExceptionIfQueueBecomesEmpty() {
-        // Arrange
-        UniqueEventsQueue queue = new UniqueEventsQueue();
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Callable<Record> callable = queue::get;
-        queue.add(factory.generateRandomFakeRecord());
-
-        // Act
-        queue.get();
-        Future<Record> mockFuture = executor.submit(callable);
-
-        // Assert
-        assertThatThrownBy(() -> mockFuture.get(5, TimeUnit.MILLISECONDS)).isInstanceOf(TimeoutException.class);
-
-        // Finalize: clean executor
-        executor.shutdownNow();
-    }
-
-    @Test
     void testThatGetThrowsNoExceptionIfQueueIsAlwaysEmpty() {
         // Arrange
         UniqueEventsQueue queue = new UniqueEventsQueue();

@@ -218,6 +218,19 @@ class UniqueEventsQueueUnitTest {
     }
 
     @Test
+    void testThatGetThrowsNoExceptionIfQueueBecomesEmpty() {
+        // Arrange
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
+        mockQueue.add(factory.generateRandomFakeRecord());
+
+        // Act
+        mockQueue.get();
+
+        // Assert
+        assertThat(mockQueue.isEmpty()).isEqualTo(true);
+    }
+
+    @Test
     void testThatGetReturnsRecord() {
         UniqueEventsQueue mockQueue = new UniqueEventsQueue();
         Record mockRecord = factory.generateRandomFakeRecord();
