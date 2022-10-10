@@ -34,7 +34,7 @@ public final class UniqueEventsQueue {
     /**
      * Creates an instance with a specified queue limit.
      *
-     * @param queueLimitParameter a queue limit.
+     * @param queueLimitParameter how many elements at most there may be in the queue.
      * @param trimAfterThatManyInsertedElements every that many items, it is checked if the queue size exceeds
      * queueLimitParameter. In other words, the queue size may exceed the limit by that many elements at most.
      * @throws IllegalArgumentException if queue limit is less than 1
