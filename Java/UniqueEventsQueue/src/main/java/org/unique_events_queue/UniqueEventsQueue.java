@@ -134,7 +134,7 @@ public final class UniqueEventsQueue {
             try {
                 timeElapsed = System.nanoTime();
                 while (!queue.iterator().hasNext()) {
-                    waitingThreadsMap.putIfAbsent(this, true);
+                    waitingThreadsMap.putIfAbsent(Thread.currentThread().getId(), true);
                     lockForAddGet.wait(milliseconds);
 
                     if (shouldItThrow && System.nanoTime() - timeElapsed >= milliseconds * Math.pow(10, 6)) {
@@ -144,9 +144,9 @@ public final class UniqueEventsQueue {
 
                 recordToReturn = queue.iterator().next();
                 queue.remove(recordToReturn);
-                waitingThreadsMap.remove(this);
+                waitingThreadsMap.remove(Thread.currentThread().getId());
             } catch (InterruptedException e) {
-                waitingThreadsMap.remove(this);
+                waitingThreadsMap.remove(Thread.currentThread().getId());
                 return null;
             }
 
@@ -163,6 +163,10 @@ public final class UniqueEventsQueue {
         synchronized (lockForAddGet) {
             return queue.isEmpty();
         }
+    }
+
+    long waitingThreadsCount() {
+        return waitingThreadsMap.size();
     }
 
     /**

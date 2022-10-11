@@ -24,6 +24,23 @@ public class QueueTestUtilities {
         return result;
     }
 
+    static void joinThreadAndHandleTimeout(Thread thread, long milliseconds) {
+        try {
+            thread.join(milliseconds);
+        } catch (InterruptedException e) {
+            System.out.println("The join was interrupted, which is unexpected.");
+        }
+    }
+
+    // XXX temporary measure. Sleep is unappreciated. Better do countdownlatch in queue.get().
+    static void sleepAndHandleInterruption(Thread thread, long milliseconds) {
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            System.out.println("Sleeping thread interrupted.");
+        }
+    }
+
     static void drainRecords(UniqueEventsQueue queue, long numberOfRecords) {
         Runnable runnable = queue::get;
         ExecutorService executor = Executors.newCachedThreadPool();

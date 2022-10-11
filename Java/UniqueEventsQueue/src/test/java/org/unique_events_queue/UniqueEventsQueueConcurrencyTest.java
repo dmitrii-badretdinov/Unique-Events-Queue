@@ -97,4 +97,67 @@ public class UniqueEventsQueueConcurrencyTest {
         // Finalize: shutdown executor
         executor.shutdownNow();
     }
+
+    @Test
+    void testThatWaitingGetIsAddedToWaitingThreadsMap() {
+        // Arrange
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
+        Runnable runnable = mockQueue::get;
+        Thread thread = new Thread(runnable);
+
+        // Act
+        thread.start();
+        QueueTestUtilities.joinThreadAndHandleTimeout(thread, 1);
+
+        // Assert
+        assertThat(mockQueue.waitingThreadsCount()).isEqualTo(1);
+
+        // Finalize
+        thread.interrupt();
+    }
+
+    @Test
+    void testThatMultipleGetsAreAddedToWaitingThreadsMap() {
+        // Arrange
+        int numberOfWaitingGets = 10;
+        UniqueEventsQueue queue = new UniqueEventsQueue();
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Runnable runnable = queue::get;
+
+        // Act
+        for (int i = 0; i < numberOfWaitingGets; ++i) {
+            executor.submit(runnable);
+        }
+        QueueTestUtilities.sleepAndHandleInterruption(Thread.currentThread(), 1);
+
+        // Assert
+        assertThat(queue.waitingThreadsCount()).isEqualTo(numberOfWaitingGets);
+
+        // Finalize
+        executor.shutdownNow();
+    }
+
+    @Test
+    void testThatFinishedGetIsSubtractedFromWaitingThreadsMap() {
+        // Arrange
+        int numberOfWaitingGets = 10;
+        UniqueEventsQueue queue = new UniqueEventsQueue();
+        ExecutorService executor = Executors.newFixedThreadPool(numberOfWaitingGets);
+        Runnable runnable = queue::get;
+        for (int i = 0; i < numberOfWaitingGets; ++i) {
+            executor.submit(runnable);
+        }
+        QueueTestUtilities.sleepAndHandleInterruption(Thread.currentThread(), 1);
+        assertThat(queue.waitingThreadsCount()).isEqualTo(numberOfWaitingGets);
+
+        // Act
+        queue.add(factory.generateRandomFakeRecord());
+        QueueTestUtilities.sleepAndHandleInterruption(Thread.currentThread(), 1);
+
+        // Assert
+        assertThat(queue.waitingThreadsCount()).isEqualTo(numberOfWaitingGets - 1);
+
+        // Finalize
+        executor.shutdownNow();
+    }
 }
