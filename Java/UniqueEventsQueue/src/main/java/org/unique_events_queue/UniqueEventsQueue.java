@@ -37,13 +37,11 @@ public final class UniqueEventsQueue {
      * @param queueLimitParameter how many elements at most there may be in the queue.
      * @param trimAfterThatManyInsertedElements every that many items, it is checked if the queue size exceeds
      * queueLimitParameter. In other words, the queue size may exceed the limit by that many elements at most.
-     * @throws IllegalArgumentException if queue limit is less than 1
      */
-    public UniqueEventsQueue(long queueLimitParameter, long trimAfterThatManyInsertedElements)
-        throws IllegalArgumentException {
+    public UniqueEventsQueue(long queueLimitParameter, long trimAfterThatManyInsertedElements) {
         if(queueLimitParameter < 1)
         {
-            throw new IllegalArgumentException("Queue size cannot be 0 or negative.");
+            throw new RuntimeException("Queue size cannot be 0 or negative.");
         }
         queueLimit = queueLimitParameter;
         this.trimAfterThatManyInsertedElements = trimAfterThatManyInsertedElements;
