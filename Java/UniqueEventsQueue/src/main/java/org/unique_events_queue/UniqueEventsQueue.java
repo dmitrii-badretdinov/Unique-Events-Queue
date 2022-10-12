@@ -1,12 +1,9 @@
 package org.unique_events_queue;
 
-import java.sql.Time;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeoutException;
 
 /**
  * A thread-safe queue of unique elements.
