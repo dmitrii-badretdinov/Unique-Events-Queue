@@ -7,6 +7,13 @@ import java.util.concurrent.*;
 import static org.assertj.core.api.Assertions.fail;
 
 public class QueueTestUtilities {
+
+    /**
+     * Gets an element from the queue.
+     * If there is no element in the queue, throws an unchecked exception.
+     * @param queue a queue to retrieve an element from.
+     * @return the retrieved element
+     */
     static Record getOrThrow(UniqueEventsQueue queue) {
         return queue.get(1000, true);
     }
