@@ -106,7 +106,7 @@ class UniqueEventsQueueUnitTest {
     }
     // endregion
 
-    // region Trimming
+    // region add() trimming
     @Test
     void testThatQueueTrimsIfQueueLimit1AndTrimInterval1() {
         // Arrange
@@ -154,6 +154,35 @@ class UniqueEventsQueueUnitTest {
     }
 
     @Test
+    void testThatQueueDoesNotTrimWhenTrimIntervalIsNotReachedForAdd() {
+        long numberOfRecords = 50;
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords + 1);
+
+        for(int i = 0; i < numberOfRecords; i++) {
+            mockQueue.add(factory.generateRandomFakeRecord());
+        }
+
+        QueueTestUtilities.drainRecords(mockQueue, numberOfRecords);
+        assertThat(mockQueue.isEmpty()).isEqualTo(true);
+    }
+
+    @Test
+    void testThatQueueTrimsWhenLimitIsExceededBy1ForAdd() {
+        long numberOfRecords = 50;
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords);
+
+        for(int i = 0; i < numberOfRecords; i++) {
+            mockQueue.add(factory.generateRandomFakeRecord());
+        }
+
+        QueueTestUtilities.getOrThrow(mockQueue);
+        assertThat(mockQueue.isEmpty()).isEqualTo(true);
+    }
+
+    // endregion
+
+    // region addAll() trimming
+    @Test
     void testThatQueueTrimsForAddAll() {
         long numberOfRecords = 50;
         UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords);
@@ -174,19 +203,6 @@ class UniqueEventsQueueUnitTest {
     }
 
     @Test
-    void testThatQueueDoesNotTrimWhenTrimIntervalIsNotReachedForAdd() {
-        long numberOfRecords = 50;
-        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords + 1);
-
-        for(int i = 0; i < numberOfRecords; i++) {
-            mockQueue.add(factory.generateRandomFakeRecord());
-        }
-
-        QueueTestUtilities.drainRecords(mockQueue, numberOfRecords);
-        assertThat(mockQueue.isEmpty()).isEqualTo(true);
-    }
-
-    @Test
     void testThatQueueDoesNotTrimWhenTrimIntervalIsNotReachedForAddAll() {
         // Arrange
         long numberOfRecords = 25;
@@ -204,19 +220,6 @@ class UniqueEventsQueueUnitTest {
         QueueTestUtilities.drainRecords(mockQueue, numberOfRecords * 2);
 
         // Assert
-        assertThat(mockQueue.isEmpty()).isEqualTo(true);
-    }
-
-    @Test
-    void testThatQueueTrimsWhenLimitIsExceededBy1ForAdd() {
-        long numberOfRecords = 50;
-        UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords);
-
-        for(int i = 0; i < numberOfRecords; i++) {
-            mockQueue.add(factory.generateRandomFakeRecord());
-        }
-
-        QueueTestUtilities.getOrThrow(mockQueue);
         assertThat(mockQueue.isEmpty()).isEqualTo(true);
     }
 
@@ -242,8 +245,9 @@ class UniqueEventsQueueUnitTest {
             assertThat(QueueTestUtilities.getOrThrow(mockQueue)).isEqualTo(iterator.next());
         }
     }
-    // endregion
 
+    // endregion
+    
     // region Other tests
     @Test
     void testThatQueueIsEmpty() {
