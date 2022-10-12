@@ -124,7 +124,7 @@ public final class UniqueEventsQueue {
          */
         synchronized (lockForAddGet) {
             Record recordToReturn;
-            long timeElapsed = 0;
+            long timeElapsed;
 
             try {
                 timeElapsed = System.nanoTime();

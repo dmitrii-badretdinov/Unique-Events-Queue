@@ -5,7 +5,7 @@ enum QueueErrorMessages {
     EXECUTOR_TIMEOUT("Executor failed to shutdown within specified timeframe."),
     THREAD_TIMEOUT("Thread took too long to return a value.");
 
-    private String message;
+    private final String message;
 
     QueueErrorMessages(String message) {
         this.message = message;

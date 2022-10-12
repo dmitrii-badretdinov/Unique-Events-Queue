@@ -20,7 +20,7 @@ final class RecordFactory {
         float amount = generateRandomFloat(settings.getFloatMin(), settings.getFloatMax());
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
         /* The dates are arbitrary */
-        calendar.set(2022, 0, 1, 1, 1, 1);
+        calendar.set(2022, Calendar.JANUARY, 1, 1, 1, 1);
         Date dateLowerBound = new Date(0);
         Date dateUpperBound = calendar.getTime();
         Date date = generateRandomDate(dateLowerBound, dateUpperBound);
