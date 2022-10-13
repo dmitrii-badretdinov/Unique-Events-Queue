@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * A thread-safe queue of unique elements.
@@ -104,7 +105,11 @@ public final class UniqueEventsQueue {
      * @return the oldest record from the queue.
      */
     public Record get() {
-        return get(Long.MAX_VALUE, false);
+        return get(Long.MAX_VALUE, false, null);
+    }
+
+    Record get(long milliseconds, boolean shouldItThrow) {
+        return get(milliseconds, shouldItThrow, null);
     }
 
     /**
@@ -115,7 +120,7 @@ public final class UniqueEventsQueue {
      * @param shouldItThrow a flag to allow throwing a TimeoutException if the waiting time ran out.
      * @return a Record from the queue on the FIFO principle.
      */
-    Record get(long milliseconds, boolean shouldItThrow) {
+    Record get(long milliseconds, boolean shouldItThrow, CountDownLatch countDownLatch) {
         /*
          * This function throws an unchecked RuntimeException instead of a checked TimeoutException because
          * the said exception is expected to be used only in tests.
@@ -130,6 +135,9 @@ public final class UniqueEventsQueue {
                 timeElapsed = System.nanoTime();
                 while (!queue.iterator().hasNext()) {
                     waitingThreadsMap.putIfAbsent(Thread.currentThread().getId(), true);
+                    if (countDownLatch != null) {
+                        countDownLatch.countDown();
+                    }
                     lockForAddGet.wait(milliseconds);
 
                     if (shouldItThrow && System.nanoTime() - timeElapsed >= milliseconds * Math.pow(10, 6)) {
@@ -148,6 +156,7 @@ public final class UniqueEventsQueue {
             return recordToReturn;
         }
     }
+
 
     /**
      * Indicates if queue contains anything.

@@ -120,18 +120,18 @@ public class UniqueEventsQueueConcurrencyTest {
     void testThatMultipleGetsAreAddedToWaitingThreadsMap() {
         // Arrange
         int numberOfWaitingGets = 10;
+        CountDownLatch countDownLatch = new CountDownLatch(10);
         UniqueEventsQueue queue = new UniqueEventsQueue();
         ExecutorService executor = Executors.newCachedThreadPool();
-        Runnable runnable = queue::get;
+        Runnable runnable = () -> queue.get(Long.MAX_VALUE, false, countDownLatch);
 
         // Act
         for (int i = 0; i < numberOfWaitingGets; ++i) {
             executor.submit(runnable);
         }
-        QueueTestUtilities.sleepAndHandleInterruption(Thread.currentThread(), 1);
 
         // Assert
-        assertThat(queue.waitingThreadsCount()).isEqualTo(numberOfWaitingGets);
+        assertThat(countDownLatch.getCount()).isEqualTo(0);
 
         // Finalize
         executor.shutdownNow();
@@ -141,14 +141,14 @@ public class UniqueEventsQueueConcurrencyTest {
     void testThatFinishedGetIsSubtractedFromWaitingThreadsMap() {
         // Arrange
         int numberOfWaitingGets = 10;
+        CountDownLatch countDownLatch = new CountDownLatch(10);
         UniqueEventsQueue queue = new UniqueEventsQueue();
         ExecutorService executor = Executors.newFixedThreadPool(numberOfWaitingGets);
-        Runnable runnable = queue::get;
+        Runnable runnable = () -> queue.get(Long.MAX_VALUE, false, countDownLatch);
         for (int i = 0; i < numberOfWaitingGets; ++i) {
             executor.submit(runnable);
         }
-        QueueTestUtilities.sleepAndHandleInterruption(Thread.currentThread(), 1);
-        assertThat(queue.waitingThreadsCount()).isEqualTo(numberOfWaitingGets);
+        assertThat(countDownLatch.getCount()).isEqualTo(0);
 
         // Act
         queue.add(factory.generateRandomFakeRecord());
