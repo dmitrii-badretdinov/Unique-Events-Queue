@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * A thread-safe queue of unique elements.
@@ -20,6 +21,7 @@ public final class UniqueEventsQueue {
     private long elementsInsertedAfterLastTrim;
     private final long trimAfterThatManyInsertedElements;
     private final ConcurrentHashMap<Object, Boolean> waitingThreadsMap = new ConcurrentHashMap<>();
+    private final CountDownLatchSwitch countDownLatchStub = new CountDownLatchSwitch();
 
     /**
      * Creates an instance with a default parameters.
@@ -104,7 +106,11 @@ public final class UniqueEventsQueue {
      * @return the oldest record from the queue.
      */
     public Record get() {
-        return get(Long.MAX_VALUE, false);
+        return get(Long.MAX_VALUE, false, countDownLatchStub);
+    }
+
+    Record get(long milliseconds, boolean shouldItThrow) {
+        return get(milliseconds, shouldItThrow, countDownLatchStub);
     }
 
     /**
@@ -115,7 +121,7 @@ public final class UniqueEventsQueue {
      * @param shouldItThrow a flag to allow throwing a TimeoutException if the waiting time ran out.
      * @return a Record from the queue on the FIFO principle.
      */
-    Record get(long milliseconds, boolean shouldItThrow) {
+    Record get(long milliseconds, boolean shouldItThrow, CountDownLatchSwitch countDownLatchSwitch) {
         /*
          * This function throws an unchecked RuntimeException instead of a checked TimeoutException because
          * the said exception is expected to be used only in tests.
@@ -130,6 +136,7 @@ public final class UniqueEventsQueue {
                 timeElapsed = System.nanoTime();
                 while (!queue.iterator().hasNext()) {
                     waitingThreadsMap.putIfAbsent(Thread.currentThread().getId(), true);
+                    countDownLatchSwitch.enactStrategy(CountDownPosition.WENT_TO_WAIT);
                     lockForAddGet.wait(milliseconds);
 
                     if (shouldItThrow && System.nanoTime() - timeElapsed >= milliseconds * Math.pow(10, 6)) {
@@ -140,6 +147,7 @@ public final class UniqueEventsQueue {
                 recordToReturn = queue.iterator().next();
                 queue.remove(recordToReturn);
                 waitingThreadsMap.remove(Thread.currentThread().getId());
+                countDownLatchSwitch.enactStrategy(CountDownPosition.FINISHED);
             } catch (InterruptedException e) {
                 waitingThreadsMap.remove(Thread.currentThread().getId());
                 return null;

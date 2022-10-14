@@ -48,37 +48,33 @@ public class UniqueEventsQueueConcurrencyTest {
     }
 
     @Test
-    void testThatAddAllNotifiesAllWaitingThreads() {
+    void testThatAddAllNotifiesEquivalentOfAddedListLengthIfItIsBelowThreadNumber() {
         // Arrange
         int numberOfThreads = 50;
-        UniqueEventsQueue queue = new UniqueEventsQueue();
-        Runnable runnableTask = queue::get;
+        int listLength = 25;
+        UniqueEventsQueue mockQueue = new UniqueEventsQueue();
+        CountDownLatchSwitch mockLatch = new CountDownLatchSwitch(CountDownPosition.FINISHED, listLength);
+        Runnable runnableTask = () -> mockQueue.get(5000, true, mockLatch);
 
-        ThreadPoolExecutor mockThreadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
-        mockThreadPoolExecutor.setCorePoolSize(0);
-        mockThreadPoolExecutor.setMaximumPoolSize(numberOfThreads);
+        ExecutorService executor = Executors.newCachedThreadPool();
 
         List<Record> recordList = new LinkedList<>();
-        for(int i = 0; i < numberOfThreads; i++) {
-            mockThreadPoolExecutor.submit(runnableTask);
+        for (int i = 0; i < numberOfThreads; ++i) {
+            executor.submit(runnableTask);
+        }
+        for (int i = 0; i < listLength; ++i) {
             recordList.add(factory.generateRandomFakeRecord());
         }
 
         // Act
-        queue.addAll(recordList);
+        mockQueue.addAll(recordList);
 
         // Assert
-        mockThreadPoolExecutor.shutdown();
-        try {
-            if(!mockThreadPoolExecutor.awaitTermination(50, TimeUnit.MILLISECONDS)) {
-                fail(QueueErrorMessages.EXECUTOR_TIMEOUT.getMessage());
-            }
-        } catch (InterruptedException e) {
-            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
-        }
+        assertThat(mockLatch.awaitCountDown(1, TimeUnit.SECONDS)).isEqualTo(true);
+        assertThat(mockQueue.waitingThreadsCount()).isEqualTo(numberOfThreads - listLength);
 
         // Finalize: shutdown executor
-        mockThreadPoolExecutor.shutdownNow();
+        executor.shutdownNow();
     }
 
     @Test
