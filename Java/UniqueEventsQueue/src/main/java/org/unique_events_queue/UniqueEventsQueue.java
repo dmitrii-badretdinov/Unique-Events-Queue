@@ -130,16 +130,16 @@ public final class UniqueEventsQueue {
          */
         synchronized (lockForAddGet) {
             Record recordToReturn;
-            long timeElapsed;
+            long timeStart;
 
             try {
-                timeElapsed = System.nanoTime();
+                timeStart = System.nanoTime();
                 while (!queue.iterator().hasNext()) {
                     waitingThreadsMap.putIfAbsent(Thread.currentThread().getId(), true);
                     countDownLatchSwitch.enactStrategy(CountDownPosition.WENT_TO_WAIT);
                     lockForAddGet.wait(milliseconds);
 
-                    if (shouldItThrow && System.nanoTime() - timeElapsed >= milliseconds * Math.pow(10, 6)) {
+                    if (shouldItThrow && System.nanoTime() - timeStart >= milliseconds * Math.pow(10, 6)) {
                         throw new RuntimeException("Timed out. There were no elements in the queue.");
                     }
                 }
