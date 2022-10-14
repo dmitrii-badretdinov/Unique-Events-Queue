@@ -47,17 +47,22 @@ public class UniqueEventsQueueConcurrencyTest {
         assertThat(QueueTestUtilities.getFutureAndHandleExceptions(future)).isInstanceOf(Record.class);
     }
 
+    /**
+     * When it is possible to check that addAll() notifies only the equivalent of the list length when the list
+     * is smaller than the number of threads, the opposite is hard to check because we would need to check that
+     * addAll() doesn't send more notifies than necessary.
+     * As it is right now, there is no test for that.
+     */
     @Test
     void testThatAddAllNotifiesEquivalentOfAddedListLengthIfItIsBelowThreadNumber() {
         // Arrange
         int numberOfThreads = 50;
         int listLength = 25;
         UniqueEventsQueue mockQueue = new UniqueEventsQueue();
-        CountDownLatchSwitch mockLatch = new CountDownLatchSwitch(CountDownPosition.FINISHED, listLength);
+        CountDownLatchSwitch mockLatch = new CountDownLatchSwitch(CountDownPosition.WENT_TO_WAIT,
+            2 * numberOfThreads - listLength);
         Runnable runnableTask = () -> mockQueue.get(5000, true, mockLatch);
-
         ExecutorService executor = Executors.newCachedThreadPool();
-
         List<Record> recordList = new LinkedList<>();
         for (int i = 0; i < numberOfThreads; ++i) {
             executor.submit(runnableTask);
@@ -68,9 +73,14 @@ public class UniqueEventsQueueConcurrencyTest {
 
         // Act
         mockQueue.addAll(recordList);
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            fail(QueueErrorMessages.INTERRUPTED.getMessage());
+        }
 
         // Assert
-        assertThat(mockLatch.awaitCountDown(1, TimeUnit.SECONDS)).isEqualTo(true);
+        assertThat(mockLatch.getCount()).isGreaterThan(0);
         assertThat(mockQueue.waitingThreadsCount()).isEqualTo(numberOfThreads - listLength);
 
         // Finalize: shutdown executor

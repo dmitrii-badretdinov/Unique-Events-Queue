@@ -23,7 +23,7 @@ public class QueueTestUtilities {
         try {
             result = future.get(50, TimeUnit.MILLISECONDS);
         } catch (InterruptedException | ExecutionException e) {
-            fail(QueueErrorMessages.INTERRUPTED_FROM_OUTSIDE.getMessage());
+            fail(QueueErrorMessages.INTERRUPTED.getMessage());
         } catch (TimeoutException e) {
             fail(QueueErrorMessages.THREAD_TIMEOUT.getMessage());
         }

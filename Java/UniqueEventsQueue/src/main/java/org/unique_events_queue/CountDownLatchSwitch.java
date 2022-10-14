@@ -32,4 +32,8 @@ public class CountDownLatchSwitch {
         }
 
     }
+
+    long getCount() {
+        return countDownLatch.getCount();
+    }
 }
