@@ -138,12 +138,10 @@ public final class UniqueEventsQueue {
                     waitingThreadsMap.putIfAbsent(Thread.currentThread().getId(), true);
                     countDownLatchSwitch.enactStrategy(CountDownPosition.WENT_TO_WAIT);
                     lockForAddGet.wait(milliseconds);
-
                     if (shouldItThrow && System.nanoTime() - timeStart >= milliseconds * Math.pow(10, 6)) {
                         throw new RuntimeException("Timed out. There were no elements in the queue.");
                     }
                 }
-
                 recordToReturn = queue.iterator().next();
                 queue.remove(recordToReturn);
                 waitingThreadsMap.remove(Thread.currentThread().getId());
@@ -152,7 +150,6 @@ public final class UniqueEventsQueue {
                 waitingThreadsMap.remove(Thread.currentThread().getId());
                 return null;
             }
-
             return recordToReturn;
         }
     }
