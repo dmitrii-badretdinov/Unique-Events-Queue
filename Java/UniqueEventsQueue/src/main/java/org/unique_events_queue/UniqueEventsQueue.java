@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A thread-safe queue of unique elements.
@@ -138,7 +139,7 @@ public final class UniqueEventsQueue {
                     waitingThreadsMap.putIfAbsent(Thread.currentThread().getId(), true);
                     countDownLatchSwitch.enactStrategy(CountDownPosition.WENT_TO_WAIT);
                     lockForAddGet.wait(milliseconds);
-                    if (shouldItThrow && System.nanoTime() - timeStart >= milliseconds * Math.pow(10, 6)) {
+                    if (shouldItThrow && System.nanoTime() - timeStart >= TimeUnit.MILLISECONDS.toNanos(milliseconds)) {
                         throw new RuntimeException("Timed out. There were no elements in the queue.");
                     }
                 }
