@@ -10,15 +10,27 @@ class RecordFactorySettings implements IRecordFactorySettings {
     private static final float FLOAT_MIN = (float) 0.001;
     private static final float FLOAT_MAX = (float) 10000000;
 
+    public long getSeed() {
+        return SEED;
+    }
 
-    public long getSeed() { return SEED; }
-    public int getLeftCharLimit() { return LEFT_CHAR_LIMIT; }
+    public int getLeftCharLimit() {
+        return LEFT_CHAR_LIMIT;
+    }
 
-    public int getRightCharLimit() { return RIGHT_CHAR_LIMIT; }
+    public int getRightCharLimit() {
+        return RIGHT_CHAR_LIMIT;
+    }
 
-    public int getStringMaxLength() { return MAX_STRING_LENGTH; }
+    public int getStringMaxLength() {
+        return MAX_STRING_LENGTH;
+    }
 
-    public float getFloatMin() { return FLOAT_MIN; }
+    public float getFloatMin() {
+        return FLOAT_MIN;
+    }
 
-    public float getFloatMax() { return FLOAT_MAX; }
+    public float getFloatMax() {
+        return FLOAT_MAX;
+    }
 }

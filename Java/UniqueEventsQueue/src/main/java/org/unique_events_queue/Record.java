@@ -15,14 +15,13 @@ public final class Record {
      *
      * It was decided to make the constructor robust when handling null inputs, but it's up for discussion.
      */
-    public Record (String idInput, float amountValue, Date dateInput)
-    {
+    public Record(String idInput, float amountValue, Date dateInput) {
         this.id = idInput == null ? "" : idInput;
         this.value = amountValue;
         this.date = (dateInput == null) ? new Date(0) : new Date(dateInput.getTime());
     }
 
-    public Record (Record recordInput) {
+    public Record(Record recordInput) {
         if (recordInput != null) {
             this.id = recordInput.getId();
             this.value = recordInput.getValue();
@@ -34,7 +33,7 @@ public final class Record {
         }
     }
 
-    public String getId () {
+    public String getId() {
         return this.id;
     }
 
@@ -43,7 +42,7 @@ public final class Record {
     }
 
     public Date getDate() {
-        return new Date (this.date.getTime());
+        return new Date(this.date.getTime());
     }
 
     @Override
@@ -57,9 +56,7 @@ public final class Record {
 
         Record record = (Record) o;
 
-        return id.equals(record.id) &&
-               value == record.value &&
-               date.equals(record.getDate());
+        return id.equals(record.id) && value == record.value && date.equals(record.getDate());
     }
 
     @Override

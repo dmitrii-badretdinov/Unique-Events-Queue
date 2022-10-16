@@ -14,9 +14,9 @@ final class RecordFactory {
         this.settings = settings;
     }
 
-    public Record generateRandomFakeRecord(){
-        String id = generateRandomString(settings.getLeftCharLimit(), settings.getRightCharLimit(),
-            settings.getStringMaxLength());
+    public Record generateRandomFakeRecord() {
+        String id = generateRandomString(
+                settings.getLeftCharLimit(), settings.getRightCharLimit(), settings.getStringMaxLength());
         float amount = generateRandomFloat(settings.getFloatMin(), settings.getFloatMax());
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("America/Los_Angeles"));
         /* The dates are arbitrary */
@@ -38,7 +38,6 @@ final class RecordFactory {
     private float generateRandomFloat(float amountMinimum, float amountMaximum) {
         return amountMinimum + this.random.nextFloat() * (amountMaximum - amountMinimum);
     }
-
 
     private Date generateRandomDate(Date minimumInclusive, Date maximumInclusive) {
         long startSeconds = minimumInclusive.getTime();

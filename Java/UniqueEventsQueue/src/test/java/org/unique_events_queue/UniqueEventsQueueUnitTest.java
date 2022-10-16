@@ -1,15 +1,13 @@
 package org.unique_events_queue;
 
-import org.junit.jupiter.api.Test;
-import org.testng.collections.Lists;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
+import org.junit.jupiter.api.Test;
+import org.testng.collections.Lists;
 
 /**
  * Tests the basic non-concurrent functionality of the queue class.
@@ -51,7 +49,7 @@ class UniqueEventsQueueUnitTest {
         mockQueue.add(inputIterator.next());
         mockQueue.add(null);
 
-        for(int i = 0; i < 2; i++) {
+        for (int i = 0; i < 2; i++) {
             assertThat(QueueTestUtilities.getOrThrow(mockQueue)).isEqualTo(mockOutputIterator.next());
         }
     }
@@ -111,7 +109,7 @@ class UniqueEventsQueueUnitTest {
     void testThatQueueTrimsIfQueueLimit1AndTrimInterval1() {
         // Arrange
         UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, 1);
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             mockQueue.add(factory.generateRandomFakeRecord());
         }
 
@@ -122,10 +120,11 @@ class UniqueEventsQueueUnitTest {
         assertThat(mockQueue.isEmpty()).isEqualTo(true);
     }
 
-    @Test void testThatQueueTrimsIfQueueLimit2AndTrimInterval1() {
+    @Test
+    void testThatQueueTrimsIfQueueLimit2AndTrimInterval1() {
         // Arrange
         UniqueEventsQueue mockQueue = new UniqueEventsQueue(2, 1);
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             mockQueue.add(factory.generateRandomFakeRecord());
         }
 
@@ -142,7 +141,7 @@ class UniqueEventsQueueUnitTest {
         // Arrange
         long numberOfRecords = 50;
         UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords);
-        for(int i = 0; i < numberOfRecords; i++) {
+        for (int i = 0; i < numberOfRecords; i++) {
             mockQueue.add(factory.generateRandomFakeRecord());
         }
 
@@ -158,7 +157,7 @@ class UniqueEventsQueueUnitTest {
         long numberOfRecords = 50;
         UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords + 1);
 
-        for(int i = 0; i < numberOfRecords; i++) {
+        for (int i = 0; i < numberOfRecords; i++) {
             mockQueue.add(factory.generateRandomFakeRecord());
         }
 
@@ -171,7 +170,7 @@ class UniqueEventsQueueUnitTest {
         long numberOfRecords = 50;
         UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords);
 
-        for(int i = 0; i < numberOfRecords; i++) {
+        for (int i = 0; i < numberOfRecords; i++) {
             mockQueue.add(factory.generateRandomFakeRecord());
         }
 
@@ -189,7 +188,7 @@ class UniqueEventsQueueUnitTest {
         List<Record> firstRecordList = new LinkedList<>();
         List<Record> secondRecordList = new LinkedList<>();
 
-        for(int i = 0; i < numberOfRecords; i++) {
+        for (int i = 0; i < numberOfRecords; i++) {
             firstRecordList.add(factory.generateRandomFakeRecord());
             secondRecordList.add(factory.generateRandomFakeRecord());
         }
@@ -197,7 +196,7 @@ class UniqueEventsQueueUnitTest {
         mockQueue.addAll(firstRecordList);
         mockQueue.addAll(secondRecordList);
         Iterator<Record> mockIterator = secondRecordList.iterator();
-        for(int i = 0; i < secondRecordList.size(); i++) {
+        for (int i = 0; i < secondRecordList.size(); i++) {
             assertThat(QueueTestUtilities.getOrThrow(mockQueue)).isEqualTo(mockIterator.next());
         }
     }
@@ -209,7 +208,7 @@ class UniqueEventsQueueUnitTest {
         UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords * 2 + 1);
         List<Record> recordList1 = new LinkedList<>();
         List<Record> recordList2 = new LinkedList<>();
-        for(int i = 0; i < numberOfRecords; i++) {
+        for (int i = 0; i < numberOfRecords; i++) {
             recordList1.add(factory.generateRandomFakeRecord());
             recordList2.add(factory.generateRandomFakeRecord());
         }
@@ -230,7 +229,7 @@ class UniqueEventsQueueUnitTest {
         UniqueEventsQueue mockQueue = new UniqueEventsQueue(1, numberOfRecords * 2);
         List<Record> recordList1 = new LinkedList<>();
         List<Record> recordList2 = new LinkedList<>();
-        for(int i = 0; i < numberOfRecords; i++) {
+        for (int i = 0; i < numberOfRecords; i++) {
             recordList1.add(factory.generateRandomFakeRecord());
             recordList2.add(factory.generateRandomFakeRecord());
         }
@@ -247,7 +246,7 @@ class UniqueEventsQueueUnitTest {
     }
 
     // endregion
-    
+
     // region Other tests
     @Test
     void testThatQueueIsEmpty() {
@@ -280,10 +279,8 @@ class UniqueEventsQueueUnitTest {
 
     @Test
     void testThatQueueAcceptsOnlyProperSizeLimit() {
-        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1))
-                .isInstanceOf(RuntimeException.class);
-        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1))
-                .isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> new UniqueEventsQueue(-10, 1)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> new UniqueEventsQueue(0, 1)).isInstanceOf(RuntimeException.class);
     }
 
     @Test

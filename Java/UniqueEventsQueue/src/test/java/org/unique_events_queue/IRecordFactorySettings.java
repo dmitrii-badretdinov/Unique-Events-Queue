@@ -5,9 +5,14 @@ package org.unique_events_queue;
  */
 interface IRecordFactorySettings {
     long getSeed();
+
     int getLeftCharLimit();
+
     int getRightCharLimit();
+
     int getStringMaxLength();
+
     float getFloatMin();
+
     float getFloatMax();
 }

@@ -1,6 +1,5 @@
 package org.unique_events_queue;
 
-import java.sql.Time;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +29,6 @@ public class CountDownLatchSwitch {
         } catch (InterruptedException e) {
             return countDownLatch.getCount() == 0;
         }
-
     }
 
     long getCount() {

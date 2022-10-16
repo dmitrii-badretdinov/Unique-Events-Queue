@@ -1,17 +1,15 @@
 package org.unique_events_queue;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
-
-import static org.assertj.core.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests various concurrent-related cases of the UniqueEventsQueue class.
  */
-
 public class UniqueEventsQueueConcurrencyTest {
     /*
      * The same executor is not used for all tests because the tests usually put tasks that
@@ -22,7 +20,7 @@ public class UniqueEventsQueueConcurrencyTest {
      *
      * The Same Executor approach removes the need to initiate an executor for every test, but
      * if we forget to cancel the unending task from it even once, all other tests can give false results.
-     * 
+     *
      * The alternative approach needs to specify an executor for every test, but even if we forget to cancel
      * the unending task, it only creates a memory leak for the duration of the test. It does not affect the results
      * of other tests. It makes the tests more reliable, therefore it was chosen.
@@ -35,7 +33,7 @@ public class UniqueEventsQueueConcurrencyTest {
     @Test
     void testThatAddNotifiesWaitingThread() {
         // Arrange
-        UniqueEventsQueue queue =  new UniqueEventsQueue();
+        UniqueEventsQueue queue = new UniqueEventsQueue();
         Callable<Record> callable = queue::get;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<Record> future = executor.submit(callable);
@@ -59,8 +57,8 @@ public class UniqueEventsQueueConcurrencyTest {
         int numberOfThreads = 50;
         int listLength = 25;
         UniqueEventsQueue mockQueue = new UniqueEventsQueue();
-        CountDownLatchSwitch mockLatch = new CountDownLatchSwitch(CountDownPosition.WENT_TO_WAIT,
-            2 * numberOfThreads - listLength);
+        CountDownLatchSwitch mockLatch =
+                new CountDownLatchSwitch(CountDownPosition.WENT_TO_WAIT, 2 * numberOfThreads - listLength);
         Runnable runnableTask = () -> mockQueue.get(5000, true, mockLatch);
         ExecutorService executor = Executors.newCachedThreadPool();
         List<Record> recordList = new LinkedList<>();

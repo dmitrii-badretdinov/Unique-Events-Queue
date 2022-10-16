@@ -1,10 +1,10 @@
 package org.unique_events_queue;
 
+import static org.assertj.core.api.Assertions.fail;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
-
-import static org.assertj.core.api.Assertions.fail;
 
 public class QueueTestUtilities {
 
@@ -53,10 +53,10 @@ public class QueueTestUtilities {
         ExecutorService executor = Executors.newCachedThreadPool();
         List<Future<?>> futureList = new LinkedList<>();
 
-        for(int i = 0; i < numberOfRecords; i++) {
+        for (int i = 0; i < numberOfRecords; i++) {
             futureList.add(executor.submit(runnable));
         }
-        for(Future<?> future : futureList) {
+        for (Future<?> future : futureList) {
             getFutureAndHandleExceptions(future);
         }
     }

@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "com.diffplug.spotless" version "6.11.0"
 }
 
 group 'org.example'
@@ -18,4 +19,16 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+spotless {
+    encoding 'UTF-8'
+
+    java {
+        target 'src/*/java/**/*.java'
+        //toggleOffOn()
+        importOrder()
+        removeUnusedImports()
+        palantirJavaFormat('1.1.0') // last version supporting jvm 8
+    }
 }

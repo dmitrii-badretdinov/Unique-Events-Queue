@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,7 +26,7 @@ public final class UniqueEventsQueue {
     /**
      * Creates an instance with a default parameters.
      */
-    public UniqueEventsQueue(){
+    public UniqueEventsQueue() {
         this((long) Math.pow(10, 9), 1000);
     }
 
@@ -39,8 +38,7 @@ public final class UniqueEventsQueue {
      * queueLimitParameter. In other words, the queue size may exceed the limit by that many elements at most.
      */
     public UniqueEventsQueue(long queueLimitParameter, long trimAfterThatManyInsertedElements) {
-        if(queueLimitParameter < 1)
-        {
+        if (queueLimitParameter < 1) {
             throw new RuntimeException("Queue size cannot be 0 or negative.");
         }
         queueLimit = queueLimitParameter;
@@ -57,7 +55,7 @@ public final class UniqueEventsQueue {
             if (record != null && queue.add(record)) {
                 lockForAddGet.notify();
                 elementsInsertedAfterLastTrim++;
-                if(elementsInsertedAfterLastTrim >= trimAfterThatManyInsertedElements) {
+                if (elementsInsertedAfterLastTrim >= trimAfterThatManyInsertedElements) {
                     trimQueueToGivenLimit(0);
                 }
             }
@@ -80,21 +78,22 @@ public final class UniqueEventsQueue {
                  * The current trimming strategy is to preemptively trim the queue
                  * as if all elements will be inserted into it.
                  */
-                if(elementsInsertedAfterLastTrim + recordList.size() >= trimAfterThatManyInsertedElements) {
+                if (elementsInsertedAfterLastTrim + recordList.size() >= trimAfterThatManyInsertedElements) {
                     trimQueueToGivenLimit(recordList.size());
                 }
 
                 long numberOfItemsInserted = 0;
                 for (Record record : recordList) {
-                    if(record != null && queue.add(record)) {
+                    if (record != null && queue.add(record)) {
                         numberOfItemsInserted++;
                     }
                 }
                 elementsInsertedAfterLastTrim += numberOfItemsInserted;
 
-                long howManyTreadsToNotify =
-                    numberOfItemsInserted > waitingThreadsMap.size() ? waitingThreadsMap.size() : numberOfItemsInserted;
-                for(int i = 0; i < howManyTreadsToNotify; i++) {
+                long howManyTreadsToNotify = numberOfItemsInserted > waitingThreadsMap.size()
+                        ? waitingThreadsMap.size()
+                        : numberOfItemsInserted;
+                for (int i = 0; i < howManyTreadsToNotify; i++) {
                     lockForAddGet.notify();
                 }
             }
