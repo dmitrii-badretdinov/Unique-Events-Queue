@@ -90,10 +90,10 @@ public final class UniqueEventsQueue {
                 }
                 elementsInsertedAfterLastTrim += numberOfItemsInserted;
 
-                long howManyTreadsToNotify = numberOfItemsInserted > waitingThreadsMap.size()
+                long howManyThreadsToNotify = numberOfItemsInserted > waitingThreadsMap.size()
                         ? waitingThreadsMap.size()
                         : numberOfItemsInserted;
-                for (int i = 0; i < howManyTreadsToNotify; i++) {
+                for (int i = 0; i < howManyThreadsToNotify; i++) {
                     lockForAddGet.notify();
                 }
             }
