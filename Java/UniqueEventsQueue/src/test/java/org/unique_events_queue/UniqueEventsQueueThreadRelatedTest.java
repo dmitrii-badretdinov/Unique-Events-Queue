@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests various concurrent-related cases of the UniqueEventsQueue class.
  */
-public class UniqueEventsQueueConcurrencyTest {
+public class UniqueEventsQueueThreadRelatedTest {
     /*
      * The same executor is not used for all tests because the tests usually put tasks that
      * are expected to not terminate by themselves and should be cancelled manually.
