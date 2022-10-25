@@ -101,6 +101,7 @@ class UniqueEventsQueueUnitTest {
 
         assertThat(QueueTestUtilities.getOrThrow(mockQueue)).isEqualTo(record1);
         assertThat(QueueTestUtilities.getOrThrow(mockQueue)).isEqualTo(record2);
+        assertThat(mockQueue.isEmpty()).isEqualTo(true);
     }
     // endregion
 
